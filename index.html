@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Countdown Clock</title>
+    
+    <!-- Flip Library CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/@pqina/flip@1.8.2/dist/flip.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .countdown-container {
+            background: #f0f0f0;
+            padding: 40px 60px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 95%;
+            width: auto;
+        }
+
+        .countdown-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .countdown-title {
+            font-size: 3.125em;
+            font-weight: bold;
+            color: #3d3d3d;
+            text-align: center;
+            margin: 0 0 10px 0;
+            max-width: 100%;
+        }
+
+        .days-row {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .time-row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .countdown-subtitle {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #555;
+            text-align: center;
+            margin: 10px 0 0 0;
+        }
+
+        .countdown-description {
+            font-size: 1.05em;
+            line-height: 1.8;
+            color: #555;
+            text-align: left;
+            margin: 20px 0 0 0;
+            max-width: 700px;
+        }
+
+        .countdown-description strong {
+            color: #3d3d3d;
+            font-weight: 700;
+        }
+
+        .countdown-description p {
+            margin: 0 0 15px 0;
+        }
+
+        .countdown-description p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        /* Hashtag element */
+        .countdown-hashtag {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #3d3d3d;
+            text-align: center;
+            margin: 25px 0 0 0;
+        }
+
+        /* Constrain text elements to time-row width */
+        .text-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Call to Action Buttons */
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%);
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        .cta-button.secondary {
+            background: linear-gradient(135deg, #5a5a5a 0%, #3d3d3d 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button.secondary:hover {
+            background: linear-gradient(135deg, #3d3d3d 0%, #2a2a2a 100%);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .tick {
+            font-size: 1rem;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        .tick-days {
+            width: 100%;
+        }
+
+        .tick-days .tick-flip {
+            font-size: 4em;
+        }
+
+        .tick-group {
+            text-align: center;
+            margin: 0;
+        }
+
+        .tick-flip {
+            font-size: 4em;
+            font-weight: bold;
+        }
+
+        .tick-flip-panel {
+            background-color: #3d3d3d !important;
+            color: #ffffff !important;
+            border-radius: 0.15em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .tick-flip-panel-text-wrapper {
+            line-height: 1.3 !important;
+        }
+
+        .tick-char {
+            width: 1.2em;
+        }
+
+        .tick-label {
+            display: block !important;
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Hide any powered by or watermark elements */
+        .tick-credits,
+        [class*="credits"],
+        [class*="powered"],
+        a[href*="pqina"] {
+            display: none !important;
+        }
+
+        .tick-text-inline {
+            display: inline-block;
+            text-align: center;
+            min-width: 1em;
+        }
+
+        /* Ensure tick structure is properly centered */
+        .tick > div[data-repeat] {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Add separator styling */
+        .time-separator {
+            font-size: 3em;
+            color: #666;
+            margin: 0 5px;
+            align-self: center;
+            padding-bottom: 30px;
+        }
+
+        /* Responsive Design - Tablet and below */
+        @media (max-width: 1024px) {
+            .countdown-container {
+                padding: 30px 40px;
+            }
+
+            .countdown-wrapper {
+                gap: 20px;
+            }
+
+            .time-row {
+                gap: 20px;
+            }
+
+            .countdown-title {
+                font-size: 2.75em;
+            }
+
+            .countdown-subtitle {
+                font-size: 1.3em;
+            }
+
+            .countdown-description {
+                font-size: 0.95em;
+            }
+
+            .tick-flip {
+                font-size: 3.5em;
+            }
+
+            .tick-label {
+                font-size: 0.8em;
+                letter-spacing: 2px;
+            }
+        }
+
+        /* Responsive Design - Mobile landscape and small tablets */
+        @media (max-width: 768px) {
+            .countdown-container {
+                padding: 25px 30px;
+            }
+
+            .countdown-wrapper {
+                gap: 15px;
+            }
+
+            .time-row {
+                gap: 15px;
+            }
+
+            .countdown-title {
+                font-size: 2.25em;
+            }
+
+            .countdown-subtitle {
+                font-size: 1.2em;
+            }
+
+            .countdown-description {
+                font-size: 0.9em;
+                max-width: 500px;
+            }
+
+            .tick-flip {
+                font-size: 2.8em;
+            }
+
+            .tick-label {
+                font-size: 0.7em;
+                margin-top: 10px;
+            }
+
+            .tick-char {
+                width: 1.1em;
+            }
+        }
+
+        /* Responsive Design - Mobile portrait */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .countdown-container {
+                padding: 20px 15px;
+                border-radius: 8px;
+            }
+
+            .countdown-wrapper {
+                gap: 12px;
+            }
+
+            .time-row {
+                gap: 10px;
+            }
+
+            .countdown-title {
+                font-size: 1.75em;
+                margin-bottom: 5px;
+            }
+
+            .countdown-subtitle {
+                font-size: 1em;
+                margin-top: 5px;
+            }
+
+            .countdown-description {
+                font-size: 0.85em;
+                max-width: 100%;
+                margin-top: 10px;
+            }
+
+            .tick-flip {
+                font-size: 2.2em;
+            }
+
+            .tick-label {
+                font-size: 0.6em;
+                margin-top: 8px;
+                letter-spacing: 1px;
+            }
+
+            .tick-char {
+                width: 1em;
+            }
+
+            .tick-flip-panel {
+                border-radius: 0.12em;
+            }
+        }
+
+        /* Responsive Design - Very small mobile screens */
+        @media (max-width: 360px) {
+            .countdown-container {
+                padding: 15px 10px;
+            }
+
+            .countdown-wrapper {
+                gap: 10px;
+            }
+
+            .time-row {
+                gap: 8px;
+            }
+
+            .countdown-title {
+                font-size: 1.5em;
+            }
+
+            .countdown-subtitle {
+                font-size: 0.9em;
+            }
+
+            .countdown-description {
+                font-size: 0.8em;
+            }
+
+            .tick-flip {
+                font-size: 1.8em;
+            }
+
+            .tick-label {
+                font-size: 0.55em;
+                margin-top: 6px;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85em;
+            color: #aaa;
+        }
+
+        .footer a {
+            color: #999;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #666;
+        }
+
+        /* Responsive Design - Large screens */
+        @media (min-width: 1440px) {
+            .tick-flip {
+                font-size: 5em;
+            }
+
+            .tick-days .tick-flip {
+                font-size: 5em;
+            }
+
+            .countdown-container {
+                padding: 50px 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <div class="countdown-wrapper">
+            <!-- Title -->
+            <h1 class="countdown-title">Save American Hemp</h1>
+
+            <!-- Days Row (Full Width) -->
+            <div class="days-row">
+                <div class="tick tick-days" 
+                     data-value="00"
+                     data-did-init="handleTickInit">
+                    <div data-repeat="true" aria-hidden="true">
+                        <span data-view="flip"></span>
+                    </div>
+                    <div class="tick-label">DAYS</div>
+                </div>
+            </div>
+
+            <!-- Time Row (Hours, Minutes, Seconds) -->
+            <div class="time-row">
+                <!-- Hours -->
+                <div class="tick tick-hours" 
+                     data-value="00"
+                     data-did-init="handleTickInit">
+                    <div data-repeat="true" aria-hidden="true">
+                        <span data-view="flip"></span>
+                    </div>
+                    <div class="tick-label">HOURS</div>
+                </div>
+
+                <!-- Minutes -->
+                <div class="tick tick-minutes" 
+                     data-value="00"
+                     data-did-init="handleTickInit">
+                    <div data-repeat="true" aria-hidden="true">
+                        <span data-view="flip"></span>
+                    </div>
+                    <div class="tick-label">MINUTES</div>
+                </div>
+
+                <!-- Seconds -->
+                <div class="tick tick-seconds" 
+                     data-value="00"
+                     data-did-init="handleTickInit">
+                    <div data-repeat="true" aria-hidden="true">
+                        <span data-view="flip"></span>
+                    </div>
+                    <div class="tick-label">SECONDS</div>
+                </div>
+            </div>
+
+            <!-- Text Content Section -->
+            <div class="text-content">
+                <h2 class="countdown-subtitle">Until Hemp is ILLEGAL</h2>
+                <div class="countdown-description">
+                    <p>A harmful federal hemp rule is on the horizon—but it's not final. We still have the power to stop it. If you value this industry, your access, or the jobs it supports, now is the moment to act. Contact your legislators and tell them this rule is the wrong move for America. Your voice can change the outcome.</p>
+                </div>
+
+                <!-- Hashtag -->
+                <h3 class="countdown-hashtag">#SAVEAMERICANHEMP</h3>
+
+                <!-- Call to Action Buttons -->
+                <div class="cta-buttons">
+                    <a href="https://texashempbusinesscouncil.com/zip/" target="_blank" rel="noopener noreferrer" class="cta-button">
+                        Contact Your Legislators
+                    </a>
+                    <a href="https://texashempbusinesscouncil.com/news/" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
+                        Hemp News
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        Made by <a href="https://www.instagram.com/meezymeek/" target="_blank" rel="noopener noreferrer">Hayden Meek</a>
+    </footer>
+
+    <!-- Flip Library JS -->
+    <script src="https://unpkg.com/@pqina/flip@1.8.2/dist/flip.min.js"></script>
+    
+    <script>
+        // Store tick instances by type
+        const ticks = {
+            days: null,
+            hours: null,
+            minutes: null,
+            seconds: null
+        };
+        
+        // Target date for countdown: November 12, 2026 at midnight
+        const targetDate = new Date('2026-11-12T00:00:00').getTime();
+
+        function handleTickInit(tick) {
+            // Identify which tick this is based on its class
+            if (tick.root.classList.contains('tick-days')) {
+                ticks.days = tick;
+            } else if (tick.root.classList.contains('tick-hours')) {
+                ticks.hours = tick;
+            } else if (tick.root.classList.contains('tick-minutes')) {
+                ticks.minutes = tick;
+            } else if (tick.root.classList.contains('tick-seconds')) {
+                ticks.seconds = tick;
+            }
+            
+            // Start countdown when all ticks are initialized
+            if (ticks.days && ticks.hours && ticks.minutes && ticks.seconds) {
+                startCountdown();
+            }
+        }
+
+        function startCountdown() {
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    // Countdown finished
+                    ticks.days.value = '00';
+                    ticks.hours.value = '00';
+                    ticks.minutes.value = '00';
+                    ticks.seconds.value = '00';
+                    return;
+                }
+
+                // Calculate time units
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Update tick values - now explicitly mapped to correct counters
+                ticks.days.value = String(days).padStart(2, '0');
+                ticks.hours.value = String(hours).padStart(2, '0');
+                ticks.minutes.value = String(minutes).padStart(2, '0');
+                ticks.seconds.value = String(seconds).padStart(2, '0');
+
+                // Update aria labels for accessibility
+                ticks.days.root.setAttribute('aria-label', days + ' days');
+                ticks.hours.root.setAttribute('aria-label', hours + ' hours');
+                ticks.minutes.root.setAttribute('aria-label', minutes + ' minutes');
+                ticks.seconds.root.setAttribute('aria-label', seconds + ' seconds');
+            }
+
+            // Update immediately
+            updateCountdown();
+            
+            // Update every second
+            setInterval(updateCountdown, 1000);
+        }
+    </script>
+</body>
+</html>
