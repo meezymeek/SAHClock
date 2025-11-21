@@ -123,9 +123,19 @@ jobs:
       - name: Generate preview image
         run: node screenshot.js
         
+      - name: Update meta tags with cache-busting timestamp
+        run: |
+          # Generate timestamp for cache busting (format: YYYYMMDDHHmm)
+          TIMESTAMP=$(date -u +"%Y%m%d%H%M")
+          
+          # Update og:image and twitter:image URLs with version parameter
+          sed -i "s|preview\.png[^\"]*\"|preview.png?v=$TIMESTAMP\"|g" index.html
+          
+          echo "Updated meta tags with timestamp: $TIMESTAMP"
+        
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add preview.png
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update preview image [automated]" && git push)
+          git add preview.png index.html
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update preview image and cache-busting timestamp [automated]" && git push)
