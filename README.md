@@ -22,6 +22,8 @@ A countdown clock for the Save American Hemp campaign, counting down to November
 - GitHub Actions workflow updates `preview.png` every 5 minutes
 - Open Graph and Twitter Card meta tags for rich social sharing
 - Preview image automatically reflects current countdown state
+- **Cache-busting**: Meta tag URLs update with timestamps to force social platforms to fetch fresh images
+- Eliminates need for manual cache clearing in Facebook/Twitter debuggers
 
 ## How It Works
 
