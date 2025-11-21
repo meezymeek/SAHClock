@@ -41,15 +41,77 @@ Users can click the subtle camera icon in the bottom-right corner to:
 - Share on Instagram or other social platforms
 - Create promotional materials
 
+## Embedding the Widget
+
+You can embed the countdown clock on any website using our JavaScript widget:
+
+### Basic Usage
+```html
+<div id="sah-countdown"></div>
+<script src="https://savehempclock.com/sah-countdown-widget.js"></script>
+<script>
+  SAHCountdown.init({
+    container: '#sah-countdown'
+  });
+</script>
+```
+
+### Customization Options
+
+**Preset Themes:**
+```javascript
+SAHCountdown.init({
+  container: '#sah-countdown',
+  theme: 'dark' // Options: 'gray', 'dark', 'light'
+});
+```
+
+**Custom Colors:**
+```javascript
+SAHCountdown.init({
+  container: '#sah-countdown',
+  colors: {
+    panelBackground: '#006400',  // Dark green panels
+    panelText: '#ffffff',        // White numbers
+    title: '#228B22',           // Green title
+    hashtag: '#228B22',         // Green hashtag
+    containerBackground: '#f0fff0' // Light green background
+  }
+});
+```
+
+**Size Options:**
+```javascript
+SAHCountdown.init({
+  container: '#sah-countdown',
+  size: 'compact' // Options: 'compact', 'medium', 'large'
+});
+```
+
+**Show/Hide Elements:**
+```javascript
+SAHCountdown.init({
+  container: '#sah-countdown',
+  showTitle: true,        // Show "Save American Hemp" title
+  showSubtitle: true,     // Show "Until Hemp is ILLEGAL"
+  showDescription: true,  // Show campaign description
+  showHashtag: true,     // Show #SAVEAMERICANHEMP
+  showCTA: false         // Show "Contact Legislators" button
+});
+```
+
+See `widget-demo.html` for live examples of all configurations.
+
 ## Technical Stack
 - **Frontend**: Pure HTML/CSS/JavaScript (no build process)
-- **Clock Animation**: [Flip library v1.8.2](https://github.com/pqina/flip)
+- **Clock Animation**: [Flip library v1.8.2](https://github.com/pqina/flip) (main site)
+- **Widget**: Pure JavaScript, no dependencies
 - **Screenshot**: html2canvas for browser-side captures
 - **Automation**: GitHub Actions + Playwright for server-side generation
 - **Hosting**: GitHub Pages with custom domain
 
 ## Local Development
-Simply open `index.html` in a browser - no build step required.
+Simply open `index.html` or `widget-demo.html` in a browser - no build step required.
 
 ## Credits
 Created by [Hayden Meek](https://www.instagram.com/meezymeek/)

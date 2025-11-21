@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAH Countdown Widget Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .demo-section h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Save American Hemp Countdown Widget - Demo Page</h1>
+
+    <!-- Demo 1: Default Gray Theme -->
+    <div class="demo-section">
+        <h2>1. Default Gray Theme</h2>
+        <div id="demo-1"></div>
+        <pre><code>&lt;div id="sah-countdown"&gt;&lt;/div&gt;
+&lt;script src="https://savehempclock.com/sah-countdown-widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown'
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Demo 2: Dark Theme -->
+    <div class="demo-section">
+        <h2>2. Dark Theme</h2>
+        <div id="demo-2"></div>
+        <pre><code>&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown',
+    theme: 'dark'
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Demo 3: Light Theme -->
+    <div class="demo-section">
+        <h2>3. Light Theme</h2>
+        <div id="demo-3"></div>
+        <pre><code>&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown',
+    theme: 'light'
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Demo 4: Custom Colors -->
+    <div class="demo-section">
+        <h2>4. Custom Colors (Green Theme)</h2>
+        <div id="demo-4"></div>
+        <pre><code>&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown',
+    colors: {
+      panelBackground: '#006400',
+      panelText: '#ffffff',
+      title: '#228B22',
+      hashtag: '#228B22',
+      containerBackground: '#f0fff0'
+    }
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Demo 5: Compact Size -->
+    <div class="demo-section">
+        <h2>5. Compact Size</h2>
+        <div id="demo-5"></div>
+        <pre><code>&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown',
+    size: 'compact'
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Demo 6: Clock Only (Minimal) -->
+    <div class="demo-section">
+        <h2>6. Clock Only (Minimal)</h2>
+        <div id="demo-6"></div>
+        <pre><code>&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown',
+    showTitle: false,
+    showSubtitle: false,
+    showDescription: false,
+    showHashtag: false
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Demo 7: With CTA Button -->
+    <div class="demo-section">
+        <h2>7. With CTA Button</h2>
+        <div id="demo-7"></div>
+        <pre><code>&lt;script&gt;
+  SAHCountdown.init({
+    container: '#sah-countdown',
+    showCTA: true,
+    showDescription: false
+  });
+&lt;/script&gt;</code></pre>
+    </div>
+
+    <!-- Load the widget -->
+    <script src="sah-countdown-widget.js"></script>
+    
+    <!-- Initialize all demos -->
+    <script>
+        // Demo 1: Default
+        SAHCountdown.init({
+            container: '#demo-1'
+        });
+
+        // Demo 2: Dark theme
+        SAHCountdown.init({
+            container: '#demo-2',
+            theme: 'dark'
+        });
+
+        // Demo 3: Light theme
+        SAHCountdown.init({
+            container: '#demo-3',
+            theme: 'light'
+        });
+
+        // Demo 4: Custom colors
+        SAHCountdown.init({
+            container: '#demo-4',
+            colors: {
+                panelBackground: '#006400',
+                panelText: '#ffffff',
+                title: '#228B22',
+                hashtag: '#228B22',
+                containerBackground: '#f0fff0'
+            }
+        });
+
+        // Demo 5: Compact
+        SAHCountdown.init({
+            container: '#demo-5',
+            size: 'compact'
+        });
+
+        // Demo 6: Minimal
+        SAHCountdown.init({
+            container: '#demo-6',
+            showTitle: false,
+            showSubtitle: false,
+            showDescription: false,
+            showHashtag: false
+        });
+
+        // Demo 7: With CTA
+        SAHCountdown.init({
+            container: '#demo-7',
+            showCTA: true,
+            showDescription: false
+        });
+    </script>
+</body>
+</html>
