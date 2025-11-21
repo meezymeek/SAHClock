@@ -590,11 +590,16 @@
             document.getElementById('labelsColor').addEventListener('input', updateWidget);
             document.getElementById('containerBg').addEventListener('input', updateWidget);
 
-            // CTA inputs
-            document.getElementById('ctaText').addEventListener('input', updateWidget);
-            document.getElementById('ctaUrl').addEventListener('input', updateWidget);
-            document.getElementById('ctaButtonBg').addEventListener('input', updateWidget);
-            document.getElementById('ctaButtonText').addEventListener('input', updateWidget);
+            // CTA inputs (check if elements exist)
+            const ctaTextInput = document.getElementById('ctaText');
+            const ctaUrlInput = document.getElementById('ctaUrl');
+            const ctaButtonBgInput = document.getElementById('ctaButtonBg');
+            const ctaButtonTextInput = document.getElementById('ctaButtonText');
+            
+            if (ctaTextInput) ctaTextInput.addEventListener('input', updateWidget);
+            if (ctaUrlInput) ctaUrlInput.addEventListener('input', updateWidget);
+            if (ctaButtonBgInput) ctaButtonBgInput.addEventListener('input', updateWidget);
+            if (ctaButtonTextInput) ctaButtonTextInput.addEventListener('input', updateWidget);
         });
     </script>
 </body>
