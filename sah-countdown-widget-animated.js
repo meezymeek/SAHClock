@@ -151,6 +151,12 @@
           background-color: ${colors.panelBackground} !important;
           color: ${colors.panelText} !important;
         }
+        .${styleId} .tick-credits,
+        .${styleId} [class*="credits"],
+        .${styleId} [class*="powered"],
+        .${styleId} a[href*="pqina"] {
+          display: none !important;
+        }
       `;
       document.head.appendChild(style);
       instance.styleId = styleId;
@@ -231,6 +237,7 @@
       container.innerHTML = html;
 
       // Initialize Tick elements and wait for them to be ready
+      const self = this;
       setTimeout(() => {
         const tickElements = container.querySelectorAll('.tick');
         tickElements.forEach(tick => {
@@ -248,18 +255,19 @@
 
         // Start countdown only after ticks are initialized
         setTimeout(() => {
-          this.startCountdown(instance);
+          self.startCountdown(instance);
         }, 100);
       }, 100);
     },
 
     startCountdown: function(instance) {
+      const self = this;
       const update = () => {
         const now = new Date().getTime();
         const distance = TARGET_DATE - now;
 
         if (distance < 0) {
-          this.updateDisplay(instance, 0, 0, 0, 0);
+          self.updateDisplay(instance, 0, 0, 0, 0);
           if (instance.interval) {
             clearInterval(instance.interval);
           }
@@ -271,7 +279,7 @@
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        this.updateDisplay(instance, days, hours, minutes, seconds);
+        self.updateDisplay(instance, days, hours, minutes, seconds);
       };
 
       // Update immediately
@@ -280,17 +288,21 @@
     },
 
     updateDisplay: function(instance, days, hours, minutes, seconds) {
-      if (instance.ticks.days) {
-        instance.ticks.days.value = String(days).padStart(3, '0');
-      }
-      if (instance.ticks.hours) {
-        instance.ticks.hours.value = String(hours).padStart(2, '0');
-      }
-      if (instance.ticks.minutes) {
-        instance.ticks.minutes.value = String(minutes).padStart(2, '0');
-      }
-      if (instance.ticks.seconds) {
-        instance.ticks.seconds.value = String(seconds).padStart(2, '0');
+      try {
+        if (instance.ticks.days && instance.ticks.days.value !== undefined) {
+          instance.ticks.days.value = String(days).padStart(3, '0');
+        }
+        if (instance.ticks.hours && instance.ticks.hours.value !== undefined) {
+          instance.ticks.hours.value = String(hours).padStart(2, '0');
+        }
+        if (instance.ticks.minutes && instance.ticks.minutes.value !== undefined) {
+          instance.ticks.minutes.value = String(minutes).padStart(2, '0');
+        }
+        if (instance.ticks.seconds && instance.ticks.seconds.value !== undefined) {
+          instance.ticks.seconds.value = String(seconds).padStart(2, '0');
+        }
+      } catch (error) {
+        console.error('SAH Countdown (Animated): Error updating display', error);
       }
     },
 
