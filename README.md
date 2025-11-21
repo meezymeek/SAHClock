@@ -43,14 +43,39 @@ Users can click the subtle camera icon in the bottom-right corner to:
 
 ## Embedding the Widget
 
-You can embed the countdown clock on any website using our JavaScript widget:
+You can embed the countdown clock on any website using our JavaScript widget. Two versions are available:
+
+### Widget Versions
+
+**Simple Widget** (Recommended)
+- Lightweight, fast loading
+- No animations, instant number updates
+- File: `sah-countdown-widget.js`
+
+**Animated Widget**
+- Includes flip clock animations
+- Loads Flip library automatically (~50KB extra)
+- File: `sah-countdown-widget-animated.js`
 
 ### Basic Usage
+
+**Simple Version:**
 ```html
 <div id="sah-countdown"></div>
 <script src="https://savehempclock.com/sah-countdown-widget.js"></script>
 <script>
   SAHCountdown.init({
+    container: '#sah-countdown'
+  });
+</script>
+```
+
+**Animated Version:**
+```html
+<div id="sah-countdown"></div>
+<script src="https://savehempclock.com/sah-countdown-widget-animated.js"></script>
+<script>
+  SAHCountdownAnimated.init({
     container: '#sah-countdown'
   });
 </script>

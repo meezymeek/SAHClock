@@ -208,6 +208,15 @@
                 <h2>⚙️ Configuration</h2>
 
                 <div class="form-group">
+                    <label>Animation Style</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="animation" value="simple" checked> Simple (Faster)</label>
+                        <label><input type="radio" name="animation" value="flip"> Flip Animation</label>
+                    </div>
+                    <small style="color: #666; font-size: 12px;">Flip animation loads additional library (~50KB)</small>
+                </div>
+
+                <div class="form-group">
                     <label>Theme</label>
                     <select id="theme">
                         <option value="gray">Gray (Default)</option>
@@ -299,14 +308,16 @@
         </div>
     </div>
 
-    <!-- Load the widget -->
+    <!-- Load both widget versions -->
     <script src="sah-countdown-widget.js"></script>
+    <script src="sah-countdown-widget-animated.js"></script>
 
     <script>
         let currentWidget = null;
 
         // Update preview and code when any setting changes
         function updateWidget() {
+            const animationType = document.querySelector('input[name="animation"]:checked').value;
             const theme = document.getElementById('theme').value;
             const size = document.querySelector('input[name="size"]:checked').value;
             const showTitle = document.getElementById('showTitle').checked;
@@ -352,21 +363,36 @@
 
             // Destroy existing widget
             if (currentWidget) {
-                SAHCountdown.destroy(currentWidget);
+                if (animationType === 'flip') {
+                    SAHCountdownAnimated.destroy(currentWidget);
+                } else {
+                    SAHCountdown.destroy(currentWidget);
+                }
             }
 
             // Create new widget
-            currentWidget = SAHCountdown.init(config);
+            if (animationType === 'flip') {
+                currentWidget = SAHCountdownAnimated.init(config);
+            } else {
+                currentWidget = SAHCountdown.init(config);
+            }
 
             // Generate code
-            generateCode(config, containerId);
+            generateCode(config, containerId, animationType);
         }
 
-        function generateCode(config, containerId) {
+        function generateCode(config, containerId, animationType) {
+            const widgetFile = animationType === 'flip' 
+                ? 'sah-countdown-widget-animated.js' 
+                : 'sah-countdown-widget.js';
+            const widgetObject = animationType === 'flip' 
+                ? 'SAHCountdownAnimated' 
+                : 'SAHCountdown';
+
             let code = `<div id="${containerId}"></div>\n`;
-            code += `<script src="https://savehempclock.com/sah-countdown-widget.js"><\/script>\n`;
+            code += `<script src="https://savehempclock.com/${widgetFile}"><\/script>\n`;
             code += `<script>\n`;
-            code += `  SAHCountdown.init({\n`;
+            code += `  ${widgetObject}.init({\n`;
             code += `    container: '#${containerId}'`;
 
             if (config.theme !== 'gray') {
@@ -422,6 +448,9 @@
             updateWidget();
 
             // Add event listeners
+            document.querySelectorAll('input[name="animation"]').forEach(input => {
+                input.addEventListener('change', updateWidget);
+            });
             document.getElementById('theme').addEventListener('change', updateWidget);
             document.querySelectorAll('input[name="size"]').forEach(input => {
                 input.addEventListener('change', updateWidget);
