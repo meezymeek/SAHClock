@@ -194,6 +194,71 @@
             .wizard-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .config-panel, .preview-panel, .code-panel {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+                margin-bottom: 20px;
+            }
+
+            .wizard-grid {
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .config-panel, .preview-panel, .code-panel {
+                padding: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .color-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .subtitle {
+                font-size: 0.85em;
+            }
+
+            .config-panel h2, .preview-panel h2, .code-panel h2 {
+                font-size: 1.2em;
+            }
+
+            #codeOutput {
+                font-size: 11px;
+                min-height: 150px;
+            }
+
+            .copy-button {
+                width: 100%;
+                padding: 15px;
+            }
         }
     </style>
 </head>
