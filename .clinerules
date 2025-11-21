@@ -1,0 +1,35 @@
+# SAHClock Project Rules
+
+This project is a countdown clock for the Save American Hemp campaign.
+
+## Project Details
+- Target Date: November 12, 2026 at midnight
+- Purpose: Advocacy countdown to raise awareness about federal hemp regulations
+- Domain: SAVEHEMPCLOCK.COM
+- GitHub: https://github.com/meezymeek/SAHClock
+
+## Technology Stack
+- Pure HTML/CSS/JavaScript (no build process needed)
+- Flip library v1.8.2 (https://github.com/pqina/flip) for flip clock animations
+- Hosted on GitHub Pages with custom domain
+
+## Content Structure
+1. H1: "Save American Hemp" (main title)
+2. Flip countdown with Days on top row (full width), Hours/Minutes/Seconds on bottom row
+3. H2: "Until Hemp is ILLEGAL" (subtitle)
+4. Body text: Call to action about federal hemp rule
+5. H3: "#SAVEAMERICANHEMP" (social media hashtag)
+6. CTA Buttons: "Contact Your Legislators" and "Hemp News"
+7. Subtle footer with creator attribution
+
+## Design Guidelines
+- Monochromatic gray color scheme throughout
+- Classic flip clock style with dark gray panels (#3d3d3d)
+- Fully responsive design for all screen sizes
+- Clean, professional advocacy messaging
+
+## Deployment
+- Git repository initialized and pushed to GitHub
+- CNAME file configured for custom domain
+- Ready for GitHub Pages deployment
+- DNS setup needed in Cloudflare

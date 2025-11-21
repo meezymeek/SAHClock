@@ -1,0 +1,128 @@
+name: Update Preview Image
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-preview:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Playwright
+        run: |
+          npm install -D @playwright/test
+          npx playwright install chromium
+          
+      - name: Create screenshot script
+        run: |
+          cat > screenshot.js << 'EOF'
+          const { chromium } = require('@playwright/test');
+
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage({
+              viewport: { width: 1920, height: 1080 }
+            });
+            
+            // Navigate to the live site
+            await page.goto('https://savehempclock.com', { 
+              waitUntil: 'networkidle',
+              timeout: 30000 
+            });
+            
+            // Wait for the flip clock to initialize
+            await page.waitForTimeout(3000);
+            
+            // Execute the screenshot function that uses static display
+            await page.evaluate(() => {
+              return new Promise(async (resolve) => {
+                const footer = document.querySelector('.footer');
+                const ctaButtons = document.querySelector('.cta-buttons');
+                const screenshotButton = document.querySelector('.screenshot-button');
+                const staticDisplay = document.querySelector('.screenshot-static-display');
+                const daysRow = document.querySelector('.days-row');
+                const timeRow = document.querySelector('.time-row');
+                
+                // Hide elements
+                footer.style.display = 'none';
+                ctaButtons.style.display = 'none';
+                screenshotButton.style.display = 'none';
+                
+                // Update and show static display
+                const targetDate = new Date('2026-11-12T00:00:00').getTime();
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                const daysStr = String(days).padStart(3, '0');
+                const hoursStr = String(hours).padStart(2, '0');
+                const minutesStr = String(minutes).padStart(2, '0');
+                const secondsStr = String(seconds).padStart(2, '0');
+                
+                document.getElementById('static-days').children[0].textContent = daysStr[0];
+                document.getElementById('static-days').children[1].textContent = daysStr[1];
+                document.getElementById('static-days').children[2].textContent = daysStr[2];
+                document.getElementById('static-hours').children[0].textContent = hoursStr[0];
+                document.getElementById('static-hours').children[1].textContent = hoursStr[1];
+                document.getElementById('static-minutes').children[0].textContent = minutesStr[0];
+                document.getElementById('static-minutes').children[1].textContent = minutesStr[1];
+                document.getElementById('static-seconds').children[0].textContent = secondsStr[0];
+                document.getElementById('static-seconds').children[1].textContent = secondsStr[1];
+                
+                daysRow.style.display = 'none';
+                timeRow.style.display = 'none';
+                staticDisplay.classList.add('active');
+                
+                setTimeout(resolve, 200);
+              });
+            });
+            
+            // Take screenshot of the container
+            const container = await page.locator('.countdown-container');
+            const screenshot = await container.screenshot();
+            
+            // Create a canvas with Instagram aspect ratio
+            const sharp = require('sharp');
+            const buffer = await sharp(screenshot)
+              .resize(1080, 1350, {
+                fit: 'contain',
+                background: { r: 240, g: 240, b: 240 }
+              })
+              .png()
+              .toBuffer();
+            
+            const fs = require('fs');
+            fs.writeFileSync('preview.png', buffer);
+            
+            await browser.close();
+            console.log('Preview image generated successfully');
+          })();
+          EOF
+          
+      - name: Install Sharp
+        run: npm install sharp
+        
+      - name: Generate preview image
+        run: node screenshot.js
+        
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview.png
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update preview image [automated]" && git push)
