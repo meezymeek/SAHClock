@@ -55,8 +55,9 @@
         document.addEventListener('DOMContentLoaded', () => {
           self.initWidget(options);
         });
+        return null; // Will initialize when DOM is ready
       } else {
-        self.initWidget(options);
+        return self.initWidget(options);
       }
     },
 
