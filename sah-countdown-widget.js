@@ -92,6 +92,10 @@
         showDescription: true,
         showHashtag: true,
         showCTA: false,
+        ctaText: 'Contact Your Legislators',
+        ctaUrl: 'https://texashempbusinesscouncil.com/zip/',
+        ctaButtonBg: '#4a4a4a',
+        ctaButtonText: '#ffffff',
         size: 'medium', // compact, medium, large
         colors: {}
       };
@@ -447,11 +451,11 @@
               margin-left: auto;
               margin-right: auto;
             ">
-              <a href="https://texashempbusinesscouncil.com/zip/" target="_blank" rel="noopener noreferrer" style="
+              <a href="${config.ctaUrl}" target="_blank" rel="noopener noreferrer" style="
                 display: inline-block;
                 padding: 15px 30px;
-                background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%);
-                color: white;
+                background: ${config.ctaButtonBg};
+                color: ${config.ctaButtonText};
                 text-decoration: none;
                 font-size: 1.1em;
                 font-weight: 700;
@@ -459,7 +463,7 @@
                 border-radius: 8px;
                 text-transform: uppercase;
                 letter-spacing: 1px;
-              ">Contact Your Legislators</a>
+              ">${config.ctaText}</a>
             </div>
           ` : ''}
         </div>

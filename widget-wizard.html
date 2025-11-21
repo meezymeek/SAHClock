@@ -349,6 +349,28 @@
                     </div>
                 </div>
 
+                <div id="ctaOptions" style="display: none; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 4px;">
+                    <h3 style="margin-top: 0; font-size: 14px;">CTA Button Settings</h3>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 13px;">Button Text</label>
+                        <input type="text" id="ctaText" value="Contact Your Legislators" placeholder="Button text">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 13px;">Button URL</label>
+                        <input type="text" id="ctaUrl" value="https://texashempbusinesscouncil.com/zip/" placeholder="https://example.com">
+                    </div>
+                    <div class="color-inputs">
+                        <div class="color-input-group">
+                            <label>Button BG</label>
+                            <input type="color" id="ctaButtonBg" value="#4a4a4a">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Button Text</label>
+                            <input type="color" id="ctaButtonText" value="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label>Container ID</label>
                     <input type="text" id="containerId" value="sah-countdown" placeholder="sah-countdown">
@@ -400,6 +422,14 @@
                 colorOptions.classList.remove('active');
             }
 
+            // Show/hide CTA options
+            const ctaOptions = document.getElementById('ctaOptions');
+            if (showCTA) {
+                ctaOptions.style.display = 'block';
+            } else {
+                ctaOptions.style.display = 'none';
+            }
+
             // Build config object
             const config = {
                 container: '#widgetPreview',
@@ -411,6 +441,14 @@
                 showHashtag: showHashtag,
                 showCTA: showCTA
             };
+
+            // Add CTA customization if CTA is shown
+            if (showCTA) {
+                config.ctaText = document.getElementById('ctaText').value;
+                config.ctaUrl = document.getElementById('ctaUrl').value;
+                config.ctaButtonBg = document.getElementById('ctaButtonBg').value;
+                config.ctaButtonText = document.getElementById('ctaButtonText').value;
+            }
 
             // Add custom colors if custom theme
             if (theme === 'custom') {
@@ -472,7 +510,22 @@
             if (!config.showSubtitle) code += `,\n    showSubtitle: false`;
             if (!config.showDescription) code += `,\n    showDescription: false`;
             if (!config.showHashtag) code += `,\n    showHashtag: false`;
-            if (config.showCTA) code += `,\n    showCTA: true`;
+            
+            if (config.showCTA) {
+                code += `,\n    showCTA: true`;
+                if (config.ctaText !== 'Contact Your Legislators') {
+                    code += `,\n    ctaText: '${config.ctaText}'`;
+                }
+                if (config.ctaUrl !== 'https://texashempbusinesscouncil.com/zip/') {
+                    code += `,\n    ctaUrl: '${config.ctaUrl}'`;
+                }
+                if (config.ctaButtonBg !== '#4a4a4a') {
+                    code += `,\n    ctaButtonBg: '${config.ctaButtonBg}'`;
+                }
+                if (config.ctaButtonText !== '#ffffff') {
+                    code += `,\n    ctaButtonText: '${config.ctaButtonText}'`;
+                }
+            }
 
             if (config.theme === 'custom' && config.colors) {
                 code += `,\n    colors: {\n`;
@@ -536,6 +589,12 @@
             document.getElementById('hashtagColor').addEventListener('input', updateWidget);
             document.getElementById('labelsColor').addEventListener('input', updateWidget);
             document.getElementById('containerBg').addEventListener('input', updateWidget);
+
+            // CTA inputs
+            document.getElementById('ctaText').addEventListener('input', updateWidget);
+            document.getElementById('ctaUrl').addEventListener('input', updateWidget);
+            document.getElementById('ctaButtonBg').addEventListener('input', updateWidget);
+            document.getElementById('ctaButtonText').addEventListener('input', updateWidget);
         });
     </script>
 </body>

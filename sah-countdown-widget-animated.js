@@ -138,6 +138,10 @@
         showDescription: true,
         showHashtag: true,
         showCTA: false,
+        ctaText: 'Contact Your Legislators',
+        ctaUrl: 'https://texashempbusinesscouncil.com/zip/',
+        ctaButtonBg: '#4a4a4a',
+        ctaButtonText: '#ffffff',
         size: 'medium',
         colors: {}
       };
@@ -283,7 +287,7 @@
 
           ${config.showCTA ? `
             <div style="margin-top: 30px; text-align: center;">
-              <a href="https://texashempbusinesscouncil.com/zip/" target="_blank" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%); color: white; text-decoration: none; font-size: 1.1em; font-weight: 700; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px;">Contact Your Legislators</a>
+              <a href="${config.ctaUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 15px 30px; background: ${config.ctaButtonBg}; color: ${config.ctaButtonText}; text-decoration: none; font-size: 1.1em; font-weight: 700; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px;">${config.ctaText}</a>
             </div>
           ` : ''}
         </div>
@@ -291,6 +295,7 @@
       `;
 
       container.innerHTML = html;
+      instance.widgetId = widgetId;
 
       // Initialize Tick elements and wait for them to be ready
       const self = this;
