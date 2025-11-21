@@ -87,6 +87,9 @@
       const defaults = {
         container: '#sah-countdown',
         theme: 'gray',
+        showLogo: false,
+        logoUrl: '',
+        logoHeight: '80px',
         showTitle: true,
         showSubtitle: true,
         showDescription: true,
@@ -202,6 +205,19 @@
           max-width: 100%;
           box-sizing: border-box;
         ">
+          ${config.showLogo && config.logoUrl ? `
+            <div style="
+              text-align: center;
+              margin-bottom: ${20 * sizeMultiplier}px;
+            ">
+              <img src="${config.logoUrl}" alt="Logo" style="
+                max-height: ${config.logoHeight};
+                max-width: 100%;
+                height: auto;
+              ">
+            </div>
+          ` : ''}
+          
           ${config.showTitle ? `
             <h1 style="
               font-size: ${3.125 * sizeMultiplier}em;

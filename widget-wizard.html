@@ -341,11 +341,25 @@
                 <div class="form-group">
                     <label>Show/Hide Elements</label>
                     <div class="checkbox-group">
+                        <label><input type="checkbox" id="showLogo"> Show Logo</label>
                         <label><input type="checkbox" id="showTitle" checked> Show Title</label>
                         <label><input type="checkbox" id="showSubtitle" checked> Show Subtitle</label>
                         <label><input type="checkbox" id="showDescription" checked> Show Description</label>
                         <label><input type="checkbox" id="showHashtag" checked> Show Hashtag</label>
                         <label><input type="checkbox" id="showCTA"> Show CTA Button</label>
+                    </div>
+                </div>
+
+                <div id="logoOptions" style="display: none; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 4px;">
+                    <h3 style="margin-top: 0; font-size: 14px;">Logo Settings</h3>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 13px;">Logo URL</label>
+                        <input type="text" id="logoUrl" value="" placeholder="https://example.com/logo.png">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 13px;">Logo Height</label>
+                        <input type="text" id="logoHeight" value="80px" placeholder="80px">
+                        <small style="color: #666; font-size: 11px;">CSS value (e.g., 80px, 5em, 10%)</small>
                     </div>
                 </div>
 
@@ -407,6 +421,7 @@
             const animationType = document.querySelector('input[name="animation"]:checked').value;
             const theme = document.getElementById('theme').value;
             const size = document.querySelector('input[name="size"]:checked').value;
+            const showLogo = document.getElementById('showLogo').checked;
             const showTitle = document.getElementById('showTitle').checked;
             const showSubtitle = document.getElementById('showSubtitle').checked;
             const showDescription = document.getElementById('showDescription').checked;
@@ -422,6 +437,14 @@
                 colorOptions.classList.remove('active');
             }
 
+            // Show/hide logo options
+            const logoOptions = document.getElementById('logoOptions');
+            if (showLogo) {
+                logoOptions.style.display = 'block';
+            } else {
+                logoOptions.style.display = 'none';
+            }
+
             // Show/hide CTA options
             const ctaOptions = document.getElementById('ctaOptions');
             if (showCTA) {
@@ -435,12 +458,19 @@
                 container: '#widgetPreview',
                 theme: theme,
                 size: size,
+                showLogo: showLogo,
                 showTitle: showTitle,
                 showSubtitle: showSubtitle,
                 showDescription: showDescription,
                 showHashtag: showHashtag,
                 showCTA: showCTA
             };
+
+            // Add logo customization if logo is shown
+            if (showLogo) {
+                config.logoUrl = document.getElementById('logoUrl').value;
+                config.logoHeight = document.getElementById('logoHeight').value;
+            }
 
             // Add CTA customization if CTA is shown
             if (showCTA) {
@@ -504,6 +534,16 @@
 
             if (config.size !== 'medium') {
                 code += `,\n    size: '${config.size}'`;
+            }
+
+            if (config.showLogo) {
+                code += `,\n    showLogo: true`;
+                if (config.logoUrl) {
+                    code += `,\n    logoUrl: '${config.logoUrl}'`;
+                }
+                if (config.logoHeight !== '80px') {
+                    code += `,\n    logoHeight: '${config.logoHeight}'`;
+                }
             }
 
             if (!config.showTitle) code += `,\n    showTitle: false`;
@@ -576,6 +616,7 @@
             document.getElementById('showTitle').addEventListener('change', updateWidget);
             document.getElementById('showSubtitle').addEventListener('change', updateWidget);
             document.getElementById('showDescription').addEventListener('change', updateWidget);
+            document.getElementById('showLogo').addEventListener('change', updateWidget);
             document.getElementById('showHashtag').addEventListener('change', updateWidget);
             document.getElementById('showCTA').addEventListener('change', updateWidget);
             document.getElementById('containerId').addEventListener('input', updateWidget);
@@ -589,6 +630,13 @@
             document.getElementById('hashtagColor').addEventListener('input', updateWidget);
             document.getElementById('labelsColor').addEventListener('input', updateWidget);
             document.getElementById('containerBg').addEventListener('input', updateWidget);
+
+            // Logo inputs (check if elements exist)
+            const logoUrlInput = document.getElementById('logoUrl');
+            const logoHeightInput = document.getElementById('logoHeight');
+            
+            if (logoUrlInput) logoUrlInput.addEventListener('input', updateWidget);
+            if (logoHeightInput) logoHeightInput.addEventListener('input', updateWidget);
 
             // CTA inputs (check if elements exist)
             const ctaTextInput = document.getElementById('ctaText');
