@@ -48,6 +48,19 @@
     instances: [],
 
     init: function(options) {
+      const self = this;
+      
+      // Ensure DOM is ready before initializing
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          self.initWidget(options);
+        });
+      } else {
+        self.initWidget(options);
+      }
+    },
+
+    initWidget: function(options) {
       const config = this.mergeConfig(options);
       const container = document.querySelector(config.container);
       
@@ -103,7 +116,78 @@
       };
       const sizeMultiplier = sizeMultipliers[config.size] || 1;
 
+      // Generate unique ID for this widget instance
+      const widgetId = 'sah-widget-' + Math.random().toString(36).substr(2, 9);
+
+      // Inject responsive styles
+      const styleId = 'sah-style-' + widgetId;
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.innerHTML = `
+        #${widgetId} .sah-digit {
+          font-size: ${4 * sizeMultiplier}em;
+        }
+        #${widgetId} h1 {
+          font-size: ${3.125 * sizeMultiplier}em;
+        }
+        #${widgetId} h2 {
+          font-size: ${1.5 * sizeMultiplier}em;
+        }
+        #${widgetId} h3 {
+          font-size: ${1.8 * sizeMultiplier}em;
+        }
+        
+        @media (max-width: 768px) {
+          #${widgetId} .sah-countdown-widget {
+            padding: ${25 * sizeMultiplier}px ${30 * sizeMultiplier}px !important;
+          }
+          #${widgetId} .sah-digit {
+            font-size: ${2.8 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h1 {
+            font-size: ${2.25 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h2 {
+            font-size: ${1.2 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h3 {
+            font-size: ${1.5 * sizeMultiplier}em !important;
+          }
+          #${widgetId} .sah-time-row {
+            gap: ${15 * sizeMultiplier}px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          #${widgetId} .sah-countdown-widget {
+            padding: ${20 * sizeMultiplier}px ${15 * sizeMultiplier}px !important;
+          }
+          #${widgetId} .sah-digit {
+            font-size: ${2.2 * sizeMultiplier}em !important;
+            padding: 0.12em 0.25em !important;
+          }
+          #${widgetId} h1 {
+            font-size: ${1.75 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h2 {
+            font-size: ${1 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h3 {
+            font-size: ${1.3 * sizeMultiplier}em !important;
+          }
+          #${widgetId} .sah-time-row {
+            gap: ${10 * sizeMultiplier}px !important;
+          }
+          #${widgetId} .sah-countdown-display {
+            gap: ${12 * sizeMultiplier}px !important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+      instance.styleId = styleId;
+
       const html = `
+        <div id="${widgetId}">
         <div class="sah-countdown-widget" style="
           background: ${colors.containerBackground};
           padding: ${40 * sizeMultiplier}px ${60 * sizeMultiplier}px;
@@ -378,9 +462,11 @@
             </div>
           ` : ''}
         </div>
+        </div>
       `;
 
       container.innerHTML = html;
+      instance.widgetId = widgetId;
     },
 
     startCountdown: function(instance) {
@@ -451,6 +537,10 @@
       }
       if (instance && instance.container) {
         instance.container.innerHTML = '';
+      }
+      if (instance && instance.styleId) {
+        const style = document.getElementById(instance.styleId);
+        if (style) style.remove();
       }
     }
   };

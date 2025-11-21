@@ -50,6 +50,51 @@
     flipLibraryLoaded: false,
     loadCallbacks: [],
 
+    init: function(options) {
+      const self = this;
+      
+      // Ensure DOM is ready before initializing
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          self.initWidget(options);
+        });
+      } else {
+        self.initWidget(options);
+      }
+    },
+
+    initWidget: function(options) {
+      const config = this.mergeConfig(options);
+      const container = document.querySelector(config.container);
+      
+      if (!container) {
+        console.error('SAH Countdown (Animated): Container not found:', config.container);
+        return;
+      }
+
+      const instance = {
+        container: container,
+        config: config,
+        interval: null,
+        ticks: {
+          days: null,
+          hours: null,
+          minutes: null,
+          seconds: null
+        }
+      };
+
+      this.instances.push(instance);
+
+      // Load Flip library then render
+      const self = this;
+      this.loadFlipLibrary(() => {
+        self.render(instance);
+      });
+
+      return instance;
+    },
+
     loadFlipLibrary: function(callback) {
       // If already loaded, call callback immediately
       if (this.flipLibraryLoaded && window.Tick) {
@@ -83,38 +128,6 @@
       document.head.appendChild(script);
     },
 
-    init: function(options) {
-      const config = this.mergeConfig(options);
-      const container = document.querySelector(config.container);
-      
-      if (!container) {
-        console.error('SAH Countdown (Animated): Container not found:', config.container);
-        return;
-      }
-
-      const instance = {
-        container: container,
-        config: config,
-        interval: null,
-        ticks: {
-          days: null,
-          hours: null,
-          minutes: null,
-          seconds: null
-        }
-      };
-
-      this.instances.push(instance);
-
-      // Load Flip library then render
-      const self = this;
-      this.loadFlipLibrary(() => {
-        self.render(instance);
-      });
-
-      return instance;
-    },
-
     mergeConfig: function(options) {
       const defaults = {
         container: '#sah-countdown',
@@ -142,26 +155,67 @@
       const sizeMultipliers = { compact: 0.7, medium: 1, large: 1.3 };
       const sizeMultiplier = sizeMultipliers[config.size] || 1;
 
+      // Generate unique ID for this widget instance
+      const widgetId = 'sah-widget-anim-' + Math.random().toString(36).substr(2, 9);
+
       // Inject custom styles for this instance
-      const styleId = 'sah-widget-style-' + Math.random().toString(36).substr(2, 9);
+      const styleId = 'sah-style-' + widgetId;
       const style = document.createElement('style');
       style.id = styleId;
       style.innerHTML = `
-        .${styleId} .tick-flip-panel {
+        #${widgetId} .tick-flip-panel {
           background-color: ${colors.panelBackground} !important;
           color: ${colors.panelText} !important;
         }
-        .${styleId} .tick-credits,
-        .${styleId} [class*="credits"],
-        .${styleId} [class*="powered"],
-        .${styleId} a[href*="pqina"] {
+        #${widgetId} .tick-credits,
+        #${widgetId} [class*="credits"],
+        #${widgetId} [class*="powered"],
+        #${widgetId} a[href*="pqina"] {
           display: none !important;
+        }
+        
+        @media (max-width: 768px) {
+          #${widgetId} .sah-countdown-widget {
+            padding: ${25 * sizeMultiplier}px ${30 * sizeMultiplier}px !important;
+          }
+          #${widgetId} .tick {
+            font-size: ${2.8 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h1 {
+            font-size: ${2.25 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h2 {
+            font-size: ${1.2 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h3 {
+            font-size: ${1.5 * sizeMultiplier}em !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          #${widgetId} .sah-countdown-widget {
+            padding: ${20 * sizeMultiplier}px ${15 * sizeMultiplier}px !important;
+          }
+          #${widgetId} .tick {
+            font-size: ${2.2 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h1 {
+            font-size: ${1.75 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h2 {
+            font-size: ${1 * sizeMultiplier}em !important;
+          }
+          #${widgetId} h3 {
+            font-size: ${1.3 * sizeMultiplier}em !important;
+          }
         }
       `;
       document.head.appendChild(style);
       instance.styleId = styleId;
+      instance.widgetId = widgetId;
 
       const html = `
+        <div id="${widgetId}">
         <div class="sah-countdown-widget ${styleId}" style="
           background: ${colors.containerBackground};
           padding: ${40 * sizeMultiplier}px ${60 * sizeMultiplier}px;
@@ -231,6 +285,7 @@
               <a href="https://texashempbusinesscouncil.com/zip/" target="_blank" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%); color: white; text-decoration: none; font-size: 1.1em; font-weight: 700; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px;">Contact Your Legislators</a>
             </div>
           ` : ''}
+        </div>
         </div>
       `;
 
