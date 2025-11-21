@@ -100,7 +100,16 @@ SAHCountdown.init({
 });
 ```
 
-See `widget-demo.html` for live examples of all configurations.
+### Widget Customization Wizard
+
+Use our interactive wizard to generate custom embed code:
+- 🔗 **[Widget Wizard](https://savehempclock.com/widget-wizard.html)**
+- Configure all options visually
+- Live preview of your customizations
+- One-click copy to clipboard
+- Access via the share button on the main site
+
+See `widget-demo.html` for additional examples of all configurations.
 
 ## Technical Stack
 - **Frontend**: Pure HTML/CSS/JavaScript (no build process)

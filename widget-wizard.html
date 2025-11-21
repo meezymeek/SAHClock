@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Customization Wizard - SAH Countdown</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .wizard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3d3d3d;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .wizard-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .config-panel, .preview-panel, .code-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .config-panel h2, .preview-panel h2, .code-panel h2 {
+            margin-top: 0;
+            color: #3d3d3d;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #3d3d3d;
+        }
+
+        .form-group select,
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        .color-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-input-group label {
+            font-size: 12px;
+            min-width: 100px;
+        }
+
+        .color-input-group input[type="color"] {
+            width: 50px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #colorOptions {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        #colorOptions.active {
+            display: block;
+        }
+
+        .preview-wrapper {
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #codeOutput {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .copy-button {
+            margin-top: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4a4a4a 0%, #2d2d2d 100%);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            transform: translateY(-2px);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        .copy-button.copied {
+            background: #28a745;
+        }
+
+        @media (max-width: 1024px) {
+            .wizard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wizard-container">
+        <h1>Widget Customization Wizard</h1>
+        <p class="subtitle">Customize the Save American Hemp countdown widget for your website</p>
+
+        <div class="wizard-grid">
+            <!-- Configuration Panel -->
+            <div class="config-panel">
+                <h2>⚙️ Configuration</h2>
+
+                <div class="form-group">
+                    <label>Theme</label>
+                    <select id="theme">
+                        <option value="gray">Gray (Default)</option>
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                        <option value="custom">Custom Colors</option>
+                    </select>
+                </div>
+
+                <div id="colorOptions">
+                    <h3 style="margin-top: 0; font-size: 14px;">Custom Colors</h3>
+                    <div class="color-inputs">
+                        <div class="color-input-group">
+                            <label>Panel BG</label>
+                            <input type="color" id="panelBackground" value="#3d3d3d">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Panel Text</label>
+                            <input type="color" id="panelText" value="#ffffff">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Title</label>
+                            <input type="color" id="titleColor" value="#3d3d3d">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Subtitle</label>
+                            <input type="color" id="subtitleColor" value="#555555">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Description</label>
+                            <input type="color" id="descriptionColor" value="#555555">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Hashtag</label>
+                            <input type="color" id="hashtagColor" value="#3d3d3d">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Labels</label>
+                            <input type="color" id="labelsColor" value="#888888">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Container BG</label>
+                            <input type="color" id="containerBg" value="#f0f0f0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Size</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="size" value="compact"> Compact</label>
+                        <label><input type="radio" name="size" value="medium" checked> Medium</label>
+                        <label><input type="radio" name="size" value="large"> Large</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Show/Hide Elements</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="showTitle" checked> Show Title</label>
+                        <label><input type="checkbox" id="showSubtitle" checked> Show Subtitle</label>
+                        <label><input type="checkbox" id="showDescription" checked> Show Description</label>
+                        <label><input type="checkbox" id="showHashtag" checked> Show Hashtag</label>
+                        <label><input type="checkbox" id="showCTA"> Show CTA Button</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Container ID</label>
+                    <input type="text" id="containerId" value="sah-countdown" placeholder="sah-countdown">
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="preview-panel">
+                <h2>👁️ Live Preview</h2>
+                <div class="preview-wrapper">
+                    <div id="widgetPreview"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Output Panel -->
+        <div class="code-panel">
+            <h2>📋 Generated Code</h2>
+            <p>Copy and paste this code into your website:</p>
+            <textarea id="codeOutput" readonly></textarea>
+            <button class="copy-button" onclick="copyCode()">Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <!-- Load the widget -->
+    <script src="sah-countdown-widget.js"></script>
+
+    <script>
+        let currentWidget = null;
+
+        // Update preview and code when any setting changes
+        function updateWidget() {
+            const theme = document.getElementById('theme').value;
+            const size = document.querySelector('input[name="size"]:checked').value;
+            const showTitle = document.getElementById('showTitle').checked;
+            const showSubtitle = document.getElementById('showSubtitle').checked;
+            const showDescription = document.getElementById('showDescription').checked;
+            const showHashtag = document.getElementById('showHashtag').checked;
+            const showCTA = document.getElementById('showCTA').checked;
+            const containerId = document.getElementById('containerId').value || 'sah-countdown';
+
+            // Show/hide color options
+            const colorOptions = document.getElementById('colorOptions');
+            if (theme === 'custom') {
+                colorOptions.classList.add('active');
+            } else {
+                colorOptions.classList.remove('active');
+            }
+
+            // Build config object
+            const config = {
+                container: '#widgetPreview',
+                theme: theme,
+                size: size,
+                showTitle: showTitle,
+                showSubtitle: showSubtitle,
+                showDescription: showDescription,
+                showHashtag: showHashtag,
+                showCTA: showCTA
+            };
+
+            // Add custom colors if custom theme
+            if (theme === 'custom') {
+                config.colors = {
+                    panelBackground: document.getElementById('panelBackground').value,
+                    panelText: document.getElementById('panelText').value,
+                    title: document.getElementById('titleColor').value,
+                    subtitle: document.getElementById('subtitleColor').value,
+                    description: document.getElementById('descriptionColor').value,
+                    hashtag: document.getElementById('hashtagColor').value,
+                    labels: document.getElementById('labelsColor').value,
+                    containerBackground: document.getElementById('containerBg').value
+                };
+            }
+
+            // Destroy existing widget
+            if (currentWidget) {
+                SAHCountdown.destroy(currentWidget);
+            }
+
+            // Create new widget
+            currentWidget = SAHCountdown.init(config);
+
+            // Generate code
+            generateCode(config, containerId);
+        }
+
+        function generateCode(config, containerId) {
+            let code = `<div id="${containerId}"></div>\n`;
+            code += `<script src="https://savehempclock.com/sah-countdown-widget.js"><\/script>\n`;
+            code += `<script>\n`;
+            code += `  SAHCountdown.init({\n`;
+            code += `    container: '#${containerId}'`;
+
+            if (config.theme !== 'gray') {
+                code += `,\n    theme: '${config.theme}'`;
+            }
+
+            if (config.size !== 'medium') {
+                code += `,\n    size: '${config.size}'`;
+            }
+
+            if (!config.showTitle) code += `,\n    showTitle: false`;
+            if (!config.showSubtitle) code += `,\n    showSubtitle: false`;
+            if (!config.showDescription) code += `,\n    showDescription: false`;
+            if (!config.showHashtag) code += `,\n    showHashtag: false`;
+            if (config.showCTA) code += `,\n    showCTA: true`;
+
+            if (config.theme === 'custom' && config.colors) {
+                code += `,\n    colors: {\n`;
+                code += `      panelBackground: '${config.colors.panelBackground}',\n`;
+                code += `      panelText: '${config.colors.panelText}',\n`;
+                code += `      title: '${config.colors.title}',\n`;
+                code += `      subtitle: '${config.colors.subtitle}',\n`;
+                code += `      description: '${config.colors.description}',\n`;
+                code += `      hashtag: '${config.colors.hashtag}',\n`;
+                code += `      labels: '${config.colors.labels}',\n`;
+                code += `      containerBackground: '${config.colors.containerBackground}'\n`;
+                code += `    }`;
+            }
+
+            code += `\n  });\n`;
+            code += `<\/script>`;
+
+            document.getElementById('codeOutput').value = code;
+        }
+
+        function copyCode() {
+            const codeOutput = document.getElementById('codeOutput');
+            codeOutput.select();
+            document.execCommand('copy');
+
+            const button = document.querySelector('.copy-button');
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+
+            setTimeout(() => {
+                button.textContent = 'Copy to Clipboard';
+                button.classList.remove('copied');
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWidget();
+
+            // Add event listeners
+            document.getElementById('theme').addEventListener('change', updateWidget);
+            document.querySelectorAll('input[name="size"]').forEach(input => {
+                input.addEventListener('change', updateWidget);
+            });
+            document.getElementById('showTitle').addEventListener('change', updateWidget);
+            document.getElementById('showSubtitle').addEventListener('change', updateWidget);
+            document.getElementById('showDescription').addEventListener('change', updateWidget);
+            document.getElementById('showHashtag').addEventListener('change', updateWidget);
+            document.getElementById('showCTA').addEventListener('change', updateWidget);
+            document.getElementById('containerId').addEventListener('input', updateWidget);
+
+            // Color inputs
+            document.getElementById('panelBackground').addEventListener('input', updateWidget);
+            document.getElementById('panelText').addEventListener('input', updateWidget);
+            document.getElementById('titleColor').addEventListener('input', updateWidget);
+            document.getElementById('subtitleColor').addEventListener('input', updateWidget);
+            document.getElementById('descriptionColor').addEventListener('input', updateWidget);
+            document.getElementById('hashtagColor').addEventListener('input', updateWidget);
+            document.getElementById('labelsColor').addEventListener('input', updateWidget);
+            document.getElementById('containerBg').addEventListener('input', updateWidget);
+        });
+    </script>
+</body>
+</html>
