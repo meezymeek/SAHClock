@@ -107,9 +107,9 @@
       this.instances.push(instance);
 
       // Load Flip library then render
+      const self = this;
       this.loadFlipLibrary(() => {
-        this.render(instance);
-        this.startCountdown(instance);
+        self.render(instance);
       });
 
       return instance;
@@ -230,7 +230,7 @@
 
       container.innerHTML = html;
 
-      // Initialize Tick elements
+      // Initialize Tick elements and wait for them to be ready
       setTimeout(() => {
         const tickElements = container.querySelectorAll('.tick');
         tickElements.forEach(tick => {
@@ -245,6 +245,11 @@
             instance.ticks.seconds = tickInstance;
           }
         });
+
+        // Start countdown only after ticks are initialized
+        setTimeout(() => {
+          this.startCountdown(instance);
+        }, 100);
       }, 100);
     },
 
@@ -269,11 +274,9 @@
         this.updateDisplay(instance, days, hours, minutes, seconds);
       };
 
-      // Wait for tick instances to be initialized
-      setTimeout(() => {
-        update();
-        instance.interval = setInterval(update, 1000);
-      }, 200);
+      // Update immediately
+      update();
+      instance.interval = setInterval(update, 1000);
     },
 
     updateDisplay: function(instance, days, hours, minutes, seconds) {
