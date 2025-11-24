@@ -5,7 +5,7 @@
       "name": "Gray Default",
       "author": "System",
       "created": "2025-11-24",
-      "description": "Original monochromatic gray theme",
+      "description": "Original monochromatic gray theme with both CTA buttons",
       "config": {
         "theme": "gray",
         "size": "medium",
@@ -14,7 +14,8 @@
         "showSubtitle": true,
         "showDescription": true,
         "showHashtag": true,
-        "showCTA": false
+        "showCTA": true,
+        "showCTA2": true
       }
     },
     {
@@ -22,7 +23,7 @@
       "name": "Dark Minimal",
       "author": "System",
       "created": "2025-11-24",
-      "description": "Dark theme with minimal text",
+      "description": "Dark theme with minimal text and both CTA buttons",
       "config": {
         "theme": "dark",
         "size": "medium",
@@ -31,41 +32,8 @@
         "showSubtitle": true,
         "showDescription": false,
         "showHashtag": true,
-        "showCTA": false
-      }
-    },
-    {
-      "id": "d8d-1764012596117",
-      "name": "D8D",
-      "author": "Hayden Meek",
-      "created": "2025-11-24",
-      "description": "Delta 8 Denton Branded Template",
-      "config": {
-        "container": "#widgetPreview",
-        "theme": "custom",
-        "size": "medium",
-        "showLogo": true,
-        "showTitle": true,
-        "showSubtitle": true,
-        "showDescription": true,
-        "showHashtag": true,
         "showCTA": true,
-        "logoUrl": "https://www.delta8denton.com/wp-content/uploads/2022/02/cropped-Asset-24-350x122.png",
-        "logoHeight": "50px",
-        "ctaText": "Contact Your Legislators",
-        "ctaUrl": "https://texashempbusinesscouncil.com/zip/",
-        "ctaButtonBg": "#81d2c7",
-        "ctaButtonText": "#ffffff",
-        "colors": {
-          "panelBackground": "#fcb07e",
-          "panelText": "#ffffff",
-          "title": "#ffffff",
-          "subtitle": "#ffffff",
-          "description": "#ffffff",
-          "hashtag": "#fcb07e",
-          "labels": "#ffffff",
-          "containerBackground": "#7389ae"
-        }
+        "showCTA2": true
       }
     },
     {
