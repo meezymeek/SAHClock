@@ -88,7 +88,7 @@
         "showLogo": true,
         "showTitle": true,
         "showSubtitle": true,
-        "showDescription": false,
+        "showDescription": true,
         "showHashtag": true,
         "showCTA": true,
         "showCTA2": true,
