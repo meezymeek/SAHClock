@@ -1229,6 +1229,14 @@
             const daysRow = document.querySelector('.days-row');
             const timeRow = document.querySelector('.time-row');
 
+            // Store original container styles for restoration
+            const originalStyles = {
+                width: container.style.width,
+                maxWidth: container.style.maxWidth,
+                padding: container.style.padding,
+                margin: container.style.margin
+            };
+
             // Pause the countdown
             pauseCountdown();
 
@@ -1245,9 +1253,16 @@
             timeRow.style.display = 'none';
             staticDisplay.classList.add('active');
 
+            // Force container to desktop-friendly width for clean capture
+            // This prevents mobile viewport from cutting off content
+            container.style.width = '900px';
+            container.style.maxWidth = 'none';
+            container.style.padding = '40px 60px';
+            container.style.margin = '0 auto';
+
             try {
-                // Small delay to ensure DOM has updated
-                await new Promise(resolve => setTimeout(resolve, 100));
+                // Small delay to ensure DOM has updated with new styles
+                await new Promise(resolve => setTimeout(resolve, 150));
 
                 // Capture the container
                 const canvas = await html2canvas(container, {
@@ -1257,7 +1272,7 @@
                     useCORS: true
                 });
 
-                // Create Instagram canvas
+                // Create Instagram canvas with padding
                 const instagramCanvas = document.createElement('canvas');
                 const ctx = instagramCanvas.getContext('2d');
                 
@@ -1268,10 +1283,14 @@
                 ctx.fillStyle = '#f0f0f0';
                 ctx.fillRect(0, 0, 1080, 1350);
 
-                // Scale and center content
+                // Scale and center content with padding
+                const padding = 50; // Add 50px padding on all sides
+                const availableWidth = 1080 - (padding * 2);
+                const availableHeight = 1350 - (padding * 2);
+                
                 const scale = Math.min(
-                    1080 / canvas.width,
-                    1350 / canvas.height
+                    availableWidth / canvas.width,
+                    availableHeight / canvas.height
                 );
 
                 const scaledWidth = canvas.width * scale;
@@ -1295,6 +1314,12 @@
                 console.error('Screenshot failed:', error);
                 alert('Screenshot failed. Please try again.');
             } finally {
+                // Restore original container styles
+                container.style.width = originalStyles.width;
+                container.style.maxWidth = originalStyles.maxWidth;
+                container.style.padding = originalStyles.padding;
+                container.style.margin = originalStyles.margin;
+
                 // Restore original display
                 staticDisplay.classList.remove('active');
                 daysRow.style.display = '';
