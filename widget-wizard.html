@@ -309,11 +309,10 @@
                 <h2>⚙️ Configuration</h2>
 
                 <div class="form-group">
-                    <label>Load from Template</label>
+                    <label>Load Template</label>
                     <select id="templateLoader">
-                        <option value="">Start Fresh</option>
                     </select>
-                    <small style="color: #666; font-size: 12px;">Load an existing template to modify</small>
+                    <small style="color: #666; font-size: 12px;">Select a base template to start with</small>
                 </div>
 
                 <div class="form-group">
@@ -323,16 +322,6 @@
                         <label><input type="radio" name="animation" value="flip"> Flip Animation</label>
                     </div>
                     <small style="color: #666; font-size: 12px;">Flip animation loads additional library (~50KB)</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Theme</label>
-                    <select id="theme">
-                        <option value="gray">Gray (Default)</option>
-                        <option value="dark">Dark</option>
-                        <option value="light">Light</option>
-                        <option value="custom">Custom Colors</option>
-                    </select>
                 </div>
 
                 <div id="colorOptions">
@@ -524,25 +513,41 @@
                 allTemplates.forEach(template => {
                     const option = document.createElement('option');
                     option.value = template.id;
-                    option.textContent = `${template.name} (by ${template.author})`;
+                    // Only show author for non-System templates
+                    if (template.author === 'System') {
+                        option.textContent = template.name;
+                    } else {
+                        option.textContent = `${template.name} (by ${template.author})`;
+                    }
                     dropdown.appendChild(option);
                 });
+                
+                // Load first template by default (Gray Default)
+                if (allTemplates.length > 0) {
+                    dropdown.value = allTemplates[0].id;
+                    loadTemplateIntoForm(allTemplates[0].id);
+                }
             } catch (error) {
                 console.error('Failed to load templates:', error);
             }
         }
 
-        // Load template into form
+        // Load template into form  
         function loadTemplateIntoForm(templateId) {
-            if (!templateId) return; // "Start Fresh" selected
+            if (!templateId) return;
             
             const template = allTemplates.find(t => t.id === templateId);
             if (!template) return;
             
             const config = template.config;
             
-            // Set theme
-            document.getElementById('theme').value = config.theme || 'gray';
+            // Show/hide color options based on theme
+            const colorOptions = document.getElementById('colorOptions');
+            if (config.theme === 'custom' && config.colors) {
+                colorOptions.classList.add('active');
+            } else {
+                colorOptions.classList.remove('active');
+            }
             
             // Set size
             const sizeRadio = document.querySelector(`input[name="size"][value="${config.size || 'medium'}"]`);
@@ -592,8 +597,12 @@
         // Update preview and code when any setting changes
         function updateWidget() {
             const animationType = document.querySelector('input[name="animation"]:checked').value;
-            const theme = document.getElementById('theme').value;
             const size = document.querySelector('input[name="size"]:checked').value;
+            
+            // Get theme from currently loaded template
+            const selectedTemplateId = document.getElementById('templateLoader').value;
+            const selectedTemplate = allTemplates.find(t => t.id === selectedTemplateId);
+            const theme = selectedTemplate ? selectedTemplate.config.theme : 'gray';
             const showLogo = document.getElementById('showLogo').checked;
             const showTitle = document.getElementById('showTitle').checked;
             const showSubtitle = document.getElementById('showSubtitle').checked;
@@ -896,7 +905,6 @@
             document.querySelectorAll('input[name="animation"]').forEach(input => {
                 input.addEventListener('change', updateWidget);
             });
-            document.getElementById('theme').addEventListener('change', updateWidget);
             document.querySelectorAll('input[name="size"]').forEach(input => {
                 input.addEventListener('change', updateWidget);
             });
