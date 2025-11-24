@@ -67,6 +67,17 @@
           "containerBackground": "#7389ae"
         }
       }
+    },
+    {
+      "id": "powershell-test-1764012349384",
+      "name": "PowerShell Test",
+      "author": "Me",
+      "created": "2025-11-24",
+      "description": "Testing",
+      "config": {
+        "theme": "gray",
+        "showTitle": true
+      }
     }
   ]
 }
