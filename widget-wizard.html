@@ -383,6 +383,7 @@
                         <label><input type="checkbox" id="showDescription" checked> Show Description</label>
                         <label><input type="checkbox" id="showHashtag" checked> Show Hashtag</label>
                         <label><input type="checkbox" id="showCTA"> Show CTA Button</label>
+                        <label><input type="checkbox" id="showCTA2" checked> Show CTA2 Button (Hemp News)</label>
                     </div>
                 </div>
 
@@ -417,6 +418,28 @@
                         <div class="color-input-group">
                             <label>Button Text</label>
                             <input type="color" id="ctaButtonText" value="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cta2Options" style="display: block; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 4px;">
+                    <h3 style="margin-top: 0; font-size: 14px;">CTA2 Button Settings (Hemp News)</h3>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 13px;">Button Text</label>
+                        <input type="text" id="cta2Text" value="Hemp News" placeholder="Button text">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label style="font-size: 13px;">Button URL</label>
+                        <input type="text" id="cta2Url" value="https://texashempbusinesscouncil.com/news/" placeholder="https://example.com">
+                    </div>
+                    <div class="color-inputs">
+                        <div class="color-input-group">
+                            <label>Button BG</label>
+                            <input type="color" id="cta2ButtonBg" value="#5a5a5a">
+                        </div>
+                        <div class="color-input-group">
+                            <label>Button Text</label>
+                            <input type="color" id="cta2ButtonText" value="#ffffff">
                         </div>
                     </div>
                 </div>
@@ -491,6 +514,7 @@
             const showDescription = document.getElementById('showDescription').checked;
             const showHashtag = document.getElementById('showHashtag').checked;
             const showCTA = document.getElementById('showCTA').checked;
+            const showCTA2 = document.getElementById('showCTA2').checked;
             const containerId = document.getElementById('containerId').value || 'sah-countdown';
 
             // Show/hide color options
@@ -517,6 +541,14 @@
                 ctaOptions.style.display = 'none';
             }
 
+            // Show/hide CTA2 options
+            const cta2Options = document.getElementById('cta2Options');
+            if (showCTA2) {
+                cta2Options.style.display = 'block';
+            } else {
+                cta2Options.style.display = 'none';
+            }
+
             // Build config object
             const config = {
                 container: '#widgetPreview',
@@ -527,7 +559,8 @@
                 showSubtitle: showSubtitle,
                 showDescription: showDescription,
                 showHashtag: showHashtag,
-                showCTA: showCTA
+                showCTA: showCTA,
+                showCTA2: showCTA2
             };
 
             // Add logo customization if logo is shown
@@ -542,6 +575,14 @@
                 config.ctaUrl = document.getElementById('ctaUrl').value;
                 config.ctaButtonBg = document.getElementById('ctaButtonBg').value;
                 config.ctaButtonText = document.getElementById('ctaButtonText').value;
+            }
+
+            // Add CTA2 customization
+            if (showCTA2) {
+                config.cta2Text = document.getElementById('cta2Text').value;
+                config.cta2Url = document.getElementById('cta2Url').value;
+                config.cta2ButtonBg = document.getElementById('cta2ButtonBg').value;
+                config.cta2ButtonText = document.getElementById('cta2ButtonText').value;
             }
 
             // Add custom colors if custom theme
@@ -701,6 +742,24 @@
                 }
             }
 
+            // CTA2 configuration
+            if (!config.showCTA2) {
+                code += `,\n    showCTA2: false`;
+            } else if (config.showCTA2) {
+                if (config.cta2Text !== 'Hemp News') {
+                    code += `,\n    cta2Text: '${config.cta2Text}'`;
+                }
+                if (config.cta2Url !== 'https://texashempbusinesscouncil.com/news/') {
+                    code += `,\n    cta2Url: '${config.cta2Url}'`;
+                }
+                if (config.cta2ButtonBg !== '#5a5a5a') {
+                    code += `,\n    cta2ButtonBg: '${config.cta2ButtonBg}'`;
+                }
+                if (config.cta2ButtonText !== '#ffffff') {
+                    code += `,\n    cta2ButtonText: '${config.cta2ButtonText}'`;
+                }
+            }
+
             if (config.theme === 'custom' && config.colors) {
                 code += `,\n    colors: {\n`;
                 code += `      panelBackground: '${config.colors.panelBackground}',\n`;
@@ -753,6 +812,7 @@
             document.getElementById('showLogo').addEventListener('change', updateWidget);
             document.getElementById('showHashtag').addEventListener('change', updateWidget);
             document.getElementById('showCTA').addEventListener('change', updateWidget);
+            document.getElementById('showCTA2').addEventListener('change', updateWidget);
             document.getElementById('containerId').addEventListener('input', updateWidget);
 
             // Color inputs
@@ -782,6 +842,17 @@
             if (ctaUrlInput) ctaUrlInput.addEventListener('input', updateWidget);
             if (ctaButtonBgInput) ctaButtonBgInput.addEventListener('input', updateWidget);
             if (ctaButtonTextInput) ctaButtonTextInput.addEventListener('input', updateWidget);
+
+            // CTA2 inputs
+            const cta2TextInput = document.getElementById('cta2Text');
+            const cta2UrlInput = document.getElementById('cta2Url');
+            const cta2ButtonBgInput = document.getElementById('cta2ButtonBg');
+            const cta2ButtonTextInput = document.getElementById('cta2ButtonText');
+            
+            if (cta2TextInput) cta2TextInput.addEventListener('input', updateWidget);
+            if (cta2UrlInput) cta2UrlInput.addEventListener('input', updateWidget);
+            if (cta2ButtonBgInput) cta2ButtonBgInput.addEventListener('input', updateWidget);
+            if (cta2ButtonTextInput) cta2ButtonTextInput.addEventListener('input', updateWidget);
         });
     </script>
 </body>

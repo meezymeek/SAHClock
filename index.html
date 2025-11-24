@@ -1152,7 +1152,7 @@
                 });
             }
             
-            // Handle CTA button customization
+            // Handle CTA button customization (primary button)
             if (config.showCTA && config.ctaText) {
                 ctaButton.textContent = config.ctaText;
             }
@@ -1164,6 +1164,24 @@
             }
             if (config.showCTA && config.ctaButtonText) {
                 ctaButton.style.color = config.ctaButtonText;
+            }
+            
+            // Handle secondary CTA button (Hemp News)
+            const ctaButton2 = document.querySelector('.cta-button.secondary');
+            if (config.showCTA2 !== undefined) {
+                ctaButton2.style.display = config.showCTA2 ? '' : 'none';
+            }
+            if (config.cta2Text) {
+                ctaButton2.textContent = config.cta2Text;
+            }
+            if (config.cta2Url) {
+                ctaButton2.href = config.cta2Url;
+            }
+            if (config.cta2ButtonBg) {
+                ctaButton2.style.background = config.cta2ButtonBg;
+            }
+            if (config.cta2ButtonText) {
+                ctaButton2.style.color = config.cta2ButtonText;
             }
             
             // Show/hide elements based on config
