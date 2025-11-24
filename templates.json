@@ -37,11 +37,11 @@
       }
     },
     {
-      "id": "d8d-w-hemp-news-button-1764015868485",
-      "name": "D8D w/ Hemp News Button",
+      "id": "d8d-1764015868485",
+      "name": "D8D",
       "author": "Hayden Meek",
       "created": "2025-11-24",
-      "description": "D8D Branding but i also added the Hemp News Button. IDK if its useful, but i wanted it lol.",
+      "description": "D8D Branding , add your own branding as well!",
       "config": {
         "container": "#widgetPreview",
         "theme": "custom",
