@@ -96,7 +96,7 @@
         showHashtag: true,
         showCTA: false,
         ctaText: 'Contact Your Legislators',
-        ctaUrl: 'https://texashempbusinesscouncil.com/zip/',
+        ctaUrl: 'https://texashempbusinesscouncil.com/federal-hemp-action/',
         ctaButtonBg: '#4a4a4a',
         ctaButtonText: '#ffffff',
         showCTA2: false,
