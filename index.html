@@ -1057,6 +1057,8 @@
             const container = document.querySelector('.countdown-container');
             const tickPanels = document.querySelectorAll('.tick-flip-panel');
             const staticDigits = document.querySelectorAll('.static-digit');
+            const tickLabels = document.querySelectorAll('.tick-label');
+            const staticLabels = document.querySelectorAll('.static-label');
             
             if (config.theme === 'dark') {
                 body.style.background = 'linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)';
@@ -1069,12 +1071,43 @@
                 document.querySelector('.countdown-description').style.color = '#c0c0c0';
                 document.querySelector('.countdown-hashtag').style.color = '#f0f0f0';
                 
-                // Update tick panels
+                // Update tick panels and labels
                 tickPanels.forEach(panel => {
                     panel.style.backgroundColor = '#1a1a1a !important';
                 });
                 staticDigits.forEach(digit => {
                     digit.style.backgroundColor = '#1a1a1a';
+                });
+                tickLabels.forEach(label => {
+                    label.style.color = '#888';
+                });
+                staticLabels.forEach(label => {
+                    label.style.color = '#888';
+                });
+            } else if (config.theme === 'custom' && config.colors) {
+                // Custom theme with custom colors
+                const colors = config.colors;
+                
+                container.style.background = colors.containerBackground || '#f0f0f0';
+                document.querySelector('.countdown-title').style.color = colors.title || '#3d3d3d';
+                document.querySelector('.countdown-subtitle').style.color = colors.subtitle || '#555';
+                document.querySelector('.countdown-description').style.color = colors.description || '#555';
+                document.querySelector('.countdown-hashtag').style.color = colors.hashtag || '#3d3d3d';
+                
+                // Update tick panels and labels
+                tickPanels.forEach(panel => {
+                    panel.style.backgroundColor = (colors.panelBackground || '#3d3d3d') + ' !important';
+                    panel.style.color = (colors.panelText || '#ffffff') + ' !important';
+                });
+                staticDigits.forEach(digit => {
+                    digit.style.backgroundColor = colors.panelBackground || '#3d3d3d';
+                    digit.style.color = colors.panelText || '#ffffff';
+                });
+                tickLabels.forEach(label => {
+                    label.style.color = colors.labels || '#888';
+                });
+                staticLabels.forEach(label => {
+                    label.style.color = colors.labels || '#888';
                 });
             } else {
                 // Gray theme (default)
@@ -1087,11 +1120,18 @@
                 document.querySelector('.countdown-description').style.color = '#555';
                 document.querySelector('.countdown-hashtag').style.color = '#3d3d3d';
                 
+                // Update tick panels and labels
                 tickPanels.forEach(panel => {
                     panel.style.backgroundColor = '#3d3d3d !important';
                 });
                 staticDigits.forEach(digit => {
                     digit.style.backgroundColor = '#3d3d3d';
+                });
+                tickLabels.forEach(label => {
+                    label.style.color = '#888';
+                });
+                staticLabels.forEach(label => {
+                    label.style.color = '#888';
                 });
             }
             
