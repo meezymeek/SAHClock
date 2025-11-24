@@ -67,6 +67,45 @@
           "containerBackground": "#7389ae"
         }
       }
+    },
+    {
+      "id": "d8d-w-hemp-news-button-1764015868485",
+      "name": "D8D w/ Hemp News Button",
+      "author": "Hayden Meek",
+      "created": "2025-11-24",
+      "description": "D8D Branding but i also added the Hemp News Button. IDK if its useful, but i wanted it lol.",
+      "config": {
+        "container": "#widgetPreview",
+        "theme": "custom",
+        "size": "medium",
+        "showLogo": true,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": true,
+        "showHashtag": true,
+        "showCTA": true,
+        "showCTA2": true,
+        "logoUrl": "https://www.delta8denton.com/wp-content/uploads/2022/02/cropped-Asset-24-350x122.png",
+        "logoHeight": "50px",
+        "ctaText": "Contact Your Legislators",
+        "ctaUrl": "https://texashempbusinesscouncil.com/zip/",
+        "ctaButtonBg": "#81d2c7",
+        "ctaButtonText": "#ffffff",
+        "cta2Text": "Hemp News",
+        "cta2Url": "https://texashempbusinesscouncil.com/news/",
+        "cta2ButtonBg": "#fcb07e",
+        "cta2ButtonText": "#ffffff",
+        "colors": {
+          "panelBackground": "#fcb07e",
+          "panelText": "#ffffff",
+          "title": "#ffffff",
+          "subtitle": "#ffffff",
+          "description": "#ffffff",
+          "hashtag": "#fcb07e",
+          "labels": "#ffffff",
+          "containerBackground": "#7389ae"
+        }
+      }
     }
   ]
 }
