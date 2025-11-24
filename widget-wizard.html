@@ -763,15 +763,15 @@
                     // Success
                     statusDiv.style.background = '#d4edda';
                     statusDiv.style.color = '#155724';
-                    statusDiv.innerHTML = `✓ Template saved successfully!<br><small>Template ID: ${data.templateId}</small>`;
+                    statusDiv.innerHTML = `✓ Template saved successfully!<br><small>Template ID: ${data.templateId}</small><br><br><small style="color: #856404;">⏱️ Note: It may take 5-10 minutes for your template to appear in the template selector as GitHub Pages rebuilds the site.</small>`;
                     
-                    // Clear form after 3 seconds and close modal
+                    // Clear form after 5 seconds to give time to read message
                     setTimeout(() => {
                         document.getElementById('modalTemplateName').value = '';
                         document.getElementById('modalTemplateAuthor').value = '';
                         document.getElementById('modalTemplateDescription').value = '';
                         closeSaveTemplateModal();
-                    }, 3000);
+                    }, 5000);
                 } else {
                     // API returned error
                     throw new Error(data.error || data.details || 'Unknown error occurred');
