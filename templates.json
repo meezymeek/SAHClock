@@ -74,6 +74,45 @@
           "containerBackground": "#7389ae"
         }
       }
+    },
+    {
+      "id": "thbc-1764027032815",
+      "name": "THBC",
+      "author": "Hayden Meek",
+      "created": "2025-11-24",
+      "description": "Branding based on Texas Hemp BUsiness COuncil. I do not own the intellectual rights to the logo, but isn't it pretty slay? Make your own now!",
+      "config": {
+        "container": "#widgetPreview",
+        "theme": "custom",
+        "size": "medium",
+        "showLogo": true,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": false,
+        "showHashtag": true,
+        "showCTA": true,
+        "showCTA2": true,
+        "logoUrl": "https://texashempbusinesscouncil.com/wp-content/uploads/2025/07/UPDATED-texas-hemp-logo-green-circle-1-01.webp",
+        "logoHeight": "80px",
+        "ctaText": "Contact Your Legislators",
+        "ctaUrl": "https://texashempbusinesscouncil.com/zip/",
+        "ctaButtonBg": "#16331b",
+        "ctaButtonText": "#ffffff",
+        "cta2Text": "Hemp News",
+        "cta2Url": "https://texashempbusinesscouncil.com/news/",
+        "cta2ButtonBg": "#16331b",
+        "cta2ButtonText": "#ffffff",
+        "colors": {
+          "panelBackground": "#16331b",
+          "panelText": "#ffffff",
+          "title": "#16331b",
+          "subtitle": "#16331b",
+          "description": "#16331b",
+          "hashtag": "#16331b",
+          "labels": "#888888",
+          "containerBackground": "#ffffff"
+        }
+      }
     }
   ]
 }
