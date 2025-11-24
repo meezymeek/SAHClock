@@ -309,6 +309,14 @@
                 <h2>⚙️ Configuration</h2>
 
                 <div class="form-group">
+                    <label>Load from Template</label>
+                    <select id="templateLoader">
+                        <option value="">Start Fresh</option>
+                    </select>
+                    <small style="color: #666; font-size: 12px;">Load an existing template to modify</small>
+                </div>
+
+                <div class="form-group">
                     <label>Animation Style</label>
                     <div class="radio-group">
                         <label><input type="radio" name="animation" value="simple" checked> Simple (Faster)</label>
@@ -502,6 +510,84 @@
     <script>
         let currentWidget = null;
         let currentConfig = null;
+        let allTemplates = [];
+
+        // Load available templates
+        async function loadAvailableTemplates() {
+            try {
+                const response = await fetch('templates.json');
+                const data = await response.json();
+                allTemplates = data.templates || [];
+                
+                // Populate dropdown
+                const dropdown = document.getElementById('templateLoader');
+                allTemplates.forEach(template => {
+                    const option = document.createElement('option');
+                    option.value = template.id;
+                    option.textContent = `${template.name} (by ${template.author})`;
+                    dropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load templates:', error);
+            }
+        }
+
+        // Load template into form
+        function loadTemplateIntoForm(templateId) {
+            if (!templateId) return; // "Start Fresh" selected
+            
+            const template = allTemplates.find(t => t.id === templateId);
+            if (!template) return;
+            
+            const config = template.config;
+            
+            // Set theme
+            document.getElementById('theme').value = config.theme || 'gray';
+            
+            // Set size
+            const sizeRadio = document.querySelector(`input[name="size"][value="${config.size || 'medium'}"]`);
+            if (sizeRadio) sizeRadio.checked = true;
+            
+            // Set show/hide checkboxes
+            document.getElementById('showLogo').checked = config.showLogo || false;
+            document.getElementById('showTitle').checked = config.showTitle !== false;
+            document.getElementById('showSubtitle').checked = config.showSubtitle !== false;
+            document.getElementById('showDescription').checked = config.showDescription !== false;
+            document.getElementById('showHashtag').checked = config.showHashtag !== false;
+            document.getElementById('showCTA').checked = config.showCTA || false;
+            document.getElementById('showCTA2').checked = config.showCTA2 !== false;
+            
+            // Set logo values
+            if (config.logoUrl) document.getElementById('logoUrl').value = config.logoUrl;
+            if (config.logoHeight) document.getElementById('logoHeight').value = config.logoHeight;
+            
+            // Set CTA values
+            if (config.ctaText) document.getElementById('ctaText').value = config.ctaText;
+            if (config.ctaUrl) document.getElementById('ctaUrl').value = config.ctaUrl;
+            if (config.ctaButtonBg) document.getElementById('ctaButtonBg').value = config.ctaButtonBg;
+            if (config.ctaButtonText) document.getElementById('ctaButtonText').value = config.ctaButtonText;
+            
+            // Set CTA2 values
+            if (config.cta2Text) document.getElementById('cta2Text').value = config.cta2Text;
+            if (config.cta2Url) document.getElementById('cta2Url').value = config.cta2Url;
+            if (config.cta2ButtonBg) document.getElementById('cta2ButtonBg').value = config.cta2ButtonBg;
+            if (config.cta2ButtonText) document.getElementById('cta2ButtonText').value = config.cta2ButtonText;
+            
+            // Set custom colors
+            if (config.colors) {
+                if (config.colors.panelBackground) document.getElementById('panelBackground').value = config.colors.panelBackground;
+                if (config.colors.panelText) document.getElementById('panelText').value = config.colors.panelText;
+                if (config.colors.title) document.getElementById('titleColor').value = config.colors.title;
+                if (config.colors.subtitle) document.getElementById('subtitleColor').value = config.colors.subtitle;
+                if (config.colors.description) document.getElementById('descriptionColor').value = config.colors.description;
+                if (config.colors.hashtag) document.getElementById('hashtagColor').value = config.colors.hashtag;
+                if (config.colors.labels) document.getElementById('labelsColor').value = config.colors.labels;
+                if (config.colors.containerBackground) document.getElementById('containerBg').value = config.colors.containerBackground;
+            }
+            
+            // Update the widget with loaded config
+            updateWidget();
+        }
 
         // Update preview and code when any setting changes
         function updateWidget() {
@@ -796,7 +882,15 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            // Load available templates
+            loadAvailableTemplates();
+            
             updateWidget();
+
+            // Template loader dropdown
+            document.getElementById('templateLoader').addEventListener('change', function(e) {
+                loadTemplateIntoForm(e.target.value);
+            });
 
             // Add event listeners
             document.querySelectorAll('input[name="animation"]').forEach(input => {
