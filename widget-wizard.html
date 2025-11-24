@@ -326,6 +326,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Theme</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="theme" value="gray" checked> Gray</label>
+                        <label><input type="radio" name="theme" value="dark"> Dark</label>
+                        <label><input type="radio" name="theme" value="custom"> Custom Colors</label>
+                    </div>
+                    <small style="color: #666; font-size: 12px;">Custom Colors unlocks the color pickers below</small>
+                </div>
+
+                <div class="form-group">
                     <label>Animation Style</label>
                     <div class="radio-group">
                         <label><input type="radio" name="animation" value="simple" checked> Simple (Faster)</label>
@@ -560,6 +570,10 @@
             
             const config = template.config;
             
+            // Set theme radio button
+            const themeRadio = document.querySelector(`input[name="theme"][value="${config.theme || 'gray'}"]`);
+            if (themeRadio) themeRadio.checked = true;
+            
             // Show/hide color options based on theme
             const colorOptions = document.getElementById('colorOptions');
             if (config.theme === 'custom' && config.colors) {
@@ -618,10 +632,8 @@
             const animationType = document.querySelector('input[name="animation"]:checked').value;
             const size = document.querySelector('input[name="size"]:checked').value;
             
-            // Get theme from currently loaded template
-            const selectedTemplateId = document.getElementById('templateLoader').value;
-            const selectedTemplate = allTemplates.find(t => t.id === selectedTemplateId);
-            const theme = selectedTemplate ? selectedTemplate.config.theme : 'gray';
+            // Get theme from radio selector
+            const theme = document.querySelector('input[name="theme"]:checked').value;
             const showLogo = document.getElementById('showLogo').checked;
             const showTitle = document.getElementById('showTitle').checked;
             const showSubtitle = document.getElementById('showSubtitle').checked;
@@ -948,6 +960,9 @@
             });
 
             // Add event listeners
+            document.querySelectorAll('input[name="theme"]').forEach(input => {
+                input.addEventListener('change', updateWidget);
+            });
             document.querySelectorAll('input[name="animation"]').forEach(input => {
                 input.addEventListener('change', updateWidget);
             });
