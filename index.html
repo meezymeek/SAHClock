@@ -205,9 +205,14 @@
             font-weight: bold;
         }
 
+        :root {
+            --panel-bg: #3d3d3d;
+            --panel-text: #ffffff;
+        }
+
         .tick-flip-panel {
-            background-color: #3d3d3d !important;
-            color: #ffffff !important;
+            background-color: var(--panel-bg) !important;
+            color: var(--panel-text) !important;
             border-radius: 0.15em;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
@@ -1090,6 +1095,10 @@
             
             // Apply colors based on theme
             if (config.theme === 'dark') {
+                // Set CSS variables for flip panels
+                document.documentElement.style.setProperty('--panel-bg', '#1a1a1a');
+                document.documentElement.style.setProperty('--panel-text', '#ffffff');
+                
                 body.style.background = 'linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)';
                 container.style.background = '#2a2a2a';
                 title.style.color = '#f0f0f0';
@@ -1097,11 +1106,7 @@
                 description.style.color = '#c0c0c0';
                 hashtag.style.color = '#f0f0f0';
                 
-                // Apply to flip panels with higher specificity
-                document.querySelectorAll('.tick-flip-panel').forEach(panel => {
-                    panel.style.setProperty('background-color', '#1a1a1a', 'important');
-                    panel.style.setProperty('color', '#ffffff', 'important');
-                });
+                // Apply to static digits
                 document.querySelectorAll('.static-digit').forEach(digit => {
                     digit.style.backgroundColor = '#1a1a1a';
                     digit.style.color = '#ffffff';
@@ -1110,19 +1115,18 @@
                     label.style.color = '#888';
                 });
             } else if (config.theme === 'custom' && config.colors) {
-                // Custom theme
+                // Custom theme - set CSS variables for flip panels
                 const colors = config.colors;
+                document.documentElement.style.setProperty('--panel-bg', colors.panelBackground || '#3d3d3d');
+                document.documentElement.style.setProperty('--panel-text', colors.panelText || '#ffffff');
+                
                 container.style.background = colors.containerBackground || '#f0f0f0';
                 title.style.color = colors.title || '#3d3d3d';
                 subtitle.style.color = colors.subtitle || '#555';
                 description.style.color = colors.description || '#555';
                 hashtag.style.color = colors.hashtag || '#3d3d3d';
                 
-                // Apply custom colors to flip panels
-                document.querySelectorAll('.tick-flip-panel').forEach(panel => {
-                    panel.style.setProperty('background-color', colors.panelBackground || '#3d3d3d', 'important');
-                    panel.style.setProperty('color', colors.panelText || '#ffffff', 'important');
-                });
+                // Apply to static digits
                 document.querySelectorAll('.static-digit').forEach(digit => {
                     digit.style.backgroundColor = colors.panelBackground || '#3d3d3d';
                     digit.style.color = colors.panelText || '#ffffff';
@@ -1131,7 +1135,10 @@
                     label.style.color = colors.labels || '#888';
                 });
             } else {
-                // Gray theme (default)
+                // Gray theme (default) - set CSS variables
+                document.documentElement.style.setProperty('--panel-bg', '#3d3d3d');
+                document.documentElement.style.setProperty('--panel-text', '#ffffff');
+                
                 body.style.background = 'linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%)';
                 container.style.background = '#f0f0f0';
                 title.style.color = '#3d3d3d';
@@ -1139,10 +1146,7 @@
                 description.style.color = '#555';
                 hashtag.style.color = '#3d3d3d';
                 
-                document.querySelectorAll('.tick-flip-panel').forEach(panel => {
-                    panel.style.setProperty('background-color', '#3d3d3d', 'important');
-                    panel.style.setProperty('color', '#ffffff', 'important');
-                });
+                // Apply to static digits
                 document.querySelectorAll('.static-digit').forEach(digit => {
                     digit.style.backgroundColor = '#3d3d3d';
                     digit.style.color = '#ffffff';
