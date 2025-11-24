@@ -190,6 +190,42 @@
             background: #28a745;
         }
 
+        /* Save Template Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
         @media (max-width: 1024px) {
             .wizard-grid {
                 grid-template-columns: 1fr;
@@ -405,7 +441,34 @@
             <h2>📋 Generated Code</h2>
             <p>Copy and paste this code into your website:</p>
             <textarea id="codeOutput" readonly></textarea>
-            <button class="copy-button" onclick="copyCode()">Copy to Clipboard</button>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="copy-button" onclick="copyCode()" style="flex: 1;">Copy to Clipboard</button>
+                <button class="copy-button" onclick="showSaveTemplateModal()" style="flex: 1; background: linear-gradient(135deg, #228B22 0%, #006400 100%);">Save as Template</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Template Modal -->
+    <div id="saveTemplateModal" class="modal">
+        <div class="modal-content">
+            <h2>Save Template</h2>
+            <div class="form-group">
+                <label>Template Name</label>
+                <input type="text" id="modalTemplateName" placeholder="My Awesome Template">
+            </div>
+            <div class="form-group">
+                <label>Author (optional)</label>
+                <input type="text" id="modalTemplateAuthor" placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <input type="text" id="modalTemplateDescription" placeholder="Brief description">
+            </div>
+            <div class="modal-buttons">
+                <button class="copy-button" onclick="saveTemplate()" style="flex: 1;">Save</button>
+                <button class="copy-button" onclick="closeSaveTemplateModal()" style="flex: 1; background: #888;">Cancel</button>
+            </div>
+            <div id="saveStatus" style="margin-top: 15px; padding: 10px; border-radius: 4px; display: none;"></div>
         </div>
     </div>
 
@@ -415,6 +478,7 @@
 
     <script>
         let currentWidget = null;
+        let currentConfig = null;
 
         // Update preview and code when any setting changes
         function updateWidget() {
@@ -510,8 +574,45 @@
                 currentWidget = SAHCountdown.init(config);
             }
 
+            // Store current config for template saving
+            currentConfig = config;
+            
             // Generate code
             generateCode(config, containerId, animationType);
+        }
+
+        function showSaveTemplateModal() {
+            document.getElementById('saveTemplateModal').classList.add('active');
+        }
+
+        function closeSaveTemplateModal() {
+            document.getElementById('saveTemplateModal').classList.remove('active');
+            document.getElementById('saveStatus').style.display = 'none';
+        }
+
+        async function saveTemplate() {
+            const templateName = document.getElementById('modalTemplateName').value.trim();
+            const templateAuthor = document.getElementById('modalTemplateAuthor').value.trim() || 'Anonymous';
+            const templateDescription = document.getElementById('modalTemplateDescription').value.trim();
+            
+            if (!templateName) {
+                alert('Please enter a template name');
+                return;
+            }
+
+            const statusDiv = document.getElementById('saveStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = '#fff3cd';
+            statusDiv.style.color = '#856404';
+            statusDiv.textContent = 'Saving template...';
+
+            // Note: Requires GitHub token with workflow dispatch permissions
+            // For now, this will show instructions to user
+            const message = `To save this template:\n\n1. Go to: https://github.com/meezymeek/SAHClock/actions/workflows/save-template.yml\n2. Click "Run workflow"\n3. Fill in:\n   - Template Name: ${templateName}\n   - Author: ${templateAuthor}\n   - Description: ${templateDescription}\n   - Config: ${JSON.stringify(currentConfig)}\n4. Click "Run workflow"`;
+            
+            statusDiv.style.background = '#d1ecf1';
+            statusDiv.style.color = '#0c5460';
+            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
         }
 
         function generateCode(config, containerId, animationType) {

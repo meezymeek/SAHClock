@@ -1,0 +1,114 @@
+name: Save Widget Template
+
+on:
+  workflow_dispatch:
+    inputs:
+      templateName:
+        description: 'Template name'
+        required: true
+        type: string
+      templateAuthor:
+        description: 'Template author'
+        required: false
+        type: string
+        default: 'Anonymous'
+      templateDescription:
+        description: 'Template description'
+        required: false
+        type: string
+        default: ''
+      templateConfig:
+        description: 'Template configuration (JSON)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  save-template:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Save template to templates.json
+        run: |
+          node << 'EOF'
+          const fs = require('fs');
+          
+          // Read existing templates
+          const templatesFile = 'templates.json';
+          let data = { templates: [] };
+          
+          if (fs.existsSync(templatesFile)) {
+            data = JSON.parse(fs.readFileSync(templatesFile, 'utf8'));
+          }
+          
+          // Parse inputs
+          const templateName = process.env.TEMPLATE_NAME;
+          const templateAuthor = process.env.TEMPLATE_AUTHOR || 'Anonymous';
+          const templateDescription = process.env.TEMPLATE_DESCRIPTION || '';
+          const templateConfig = JSON.parse(process.env.TEMPLATE_CONFIG);
+          
+          // Generate unique ID
+          const id = templateName.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now();
+          
+          // Create new template
+          const newTemplate = {
+            id: id,
+            name: templateName,
+            author: templateAuthor,
+            created: new Date().toISOString().split('T')[0],
+            description: templateDescription,
+            config: templateConfig
+          };
+          
+          // Add to templates
+          data.templates.push(newTemplate);
+          
+          // Write back to file
+          fs.writeFileSync(templatesFile, JSON.stringify(data, null, 2));
+          
+          console.log('Template saved:', templateName);
+          EOF
+        env:
+          TEMPLATE_NAME: ${{ inputs.templateName }}
+          TEMPLATE_AUTHOR: ${{ inputs.templateAuthor }}
+          TEMPLATE_DESCRIPTION: ${{ inputs.templateDescription }}
+          TEMPLATE_CONFIG: ${{ inputs.templateConfig }}
+          
+      - name: Commit template
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add templates.json
+          git commit -m "Add new widget template: ${{ inputs.templateName }}"
+          git push
+          
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "New Widget Template: ${{ inputs.templateName }}"
+          to: hayden.meek@grumpygears.com
+          from: SAH Clock Bot <noreply@savehempclock.com>
+          body: |
+            A new widget template has been saved:
+            
+            Name: ${{ inputs.templateName }}
+            Author: ${{ inputs.templateAuthor }}
+            Description: ${{ inputs.templateDescription }}
+            
+            The template is now live at https://savehempclock.com/templates.json
+            
+            View at: https://savehempclock.com

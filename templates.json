@@ -1,0 +1,38 @@
+{
+  "templates": [
+    {
+      "id": "gray-default",
+      "name": "Gray Default",
+      "author": "System",
+      "created": "2025-11-24",
+      "description": "Original monochromatic gray theme",
+      "config": {
+        "theme": "gray",
+        "size": "medium",
+        "showLogo": false,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": true,
+        "showHashtag": true,
+        "showCTA": false
+      }
+    },
+    {
+      "id": "dark-minimal",
+      "name": "Dark Minimal",
+      "author": "System",
+      "created": "2025-11-24",
+      "description": "Dark theme with minimal text",
+      "config": {
+        "theme": "dark",
+        "size": "medium",
+        "showLogo": false,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": false,
+        "showHashtag": true,
+        "showCTA": false
+      }
+    }
+  ]
+}
