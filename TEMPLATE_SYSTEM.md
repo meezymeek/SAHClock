@@ -124,25 +124,28 @@ When a template is applied, the system updates:
 
 ## User Flow
 
-### Saving a Template (Current Process)
+### Saving a Template (Automated via Cloudflare Worker)
 
 1. User configures widget in `widget-wizard.html`
 2. Clicks "Save as Template" button
 3. Fills in template metadata (name, author, description)
-4. Follows manual instructions to trigger GitHub workflow:
-   - Go to GitHub Actions tab
-   - Select "Save Template" workflow
-   - Click "Run workflow"
-   - Enter template details
-   - Submit
+4. Clicks "Save" button
+5. Widget wizard POSTs template data to `https://api.savehempclock.com`
+6. Cloudflare Worker:
+   - Validates template data
+   - Fetches current `templates.json` from GitHub
+   - Appends new template with unique ID
+   - Commits changes via GitHub API
+   - Returns success message to user
+7. User sees "Template saved successfully!" with template ID
+8. Template is immediately available to all users
 
-5. GitHub Actions workflow:
-   - Validates input
-   - Appends to `templates.json`
-   - Commits changes
-   - Sends email notification
+**Total time:** ~2-3 seconds! ✨
 
-6. Template is now available for all users
+**Requirements:**
+- Cloudflare Worker must be deployed (see `cloudflare-worker/DEPLOYMENT.md`)
+- Worker must have GitHub Personal Access Token configured
+- API endpoint: `https://api.savehempclock.com`
 
 ### Applying a Template
 

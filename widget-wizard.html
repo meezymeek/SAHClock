@@ -592,7 +592,7 @@
 
         async function saveTemplate() {
             const templateName = document.getElementById('modalTemplateName').value.trim();
-            const templateAuthor = document.getElementById('modalTemplateAuthor').value.trim() || 'Anonymous';
+            const templateAuthor = document.getElementById('modalTemplateAuthor').value.trim();
             const templateDescription = document.getElementById('modalTemplateDescription').value.trim();
             
             if (!templateName) {
@@ -606,13 +606,46 @@
             statusDiv.style.color = '#856404';
             statusDiv.textContent = 'Saving template...';
 
-            // Note: Requires GitHub token with workflow dispatch permissions
-            // For now, this will show instructions to user
-            const message = `To save this template:\n\n1. Go to: https://github.com/meezymeek/SAHClock/actions/workflows/save-template.yml\n2. Click "Run workflow"\n3. Fill in:\n   - Template Name: ${templateName}\n   - Author: ${templateAuthor}\n   - Description: ${templateDescription}\n   - Config: ${JSON.stringify(currentConfig)}\n4. Click "Run workflow"`;
-            
-            statusDiv.style.background = '#d1ecf1';
-            statusDiv.style.color = '#0c5460';
-            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
+            try {
+                // Call Cloudflare Worker API
+                const response = await fetch('https://api.savehempclock.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: templateName,
+                        author: templateAuthor || 'Anonymous',
+                        description: templateDescription,
+                        config: currentConfig
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Success
+                    statusDiv.style.background = '#d4edda';
+                    statusDiv.style.color = '#155724';
+                    statusDiv.innerHTML = `✓ Template saved successfully!<br><small>Template ID: ${data.templateId}</small>`;
+                    
+                    // Clear form after 3 seconds and close modal
+                    setTimeout(() => {
+                        document.getElementById('modalTemplateName').value = '';
+                        document.getElementById('modalTemplateAuthor').value = '';
+                        document.getElementById('modalTemplateDescription').value = '';
+                        closeSaveTemplateModal();
+                    }, 3000);
+                } else {
+                    // API returned error
+                    throw new Error(data.error || data.details || 'Unknown error occurred');
+                }
+            } catch (error) {
+                console.error('Save template error:', error);
+                statusDiv.style.background = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.innerHTML = `✗ Failed to save template<br><small>${error.message}</small><br><br><small>Make sure the Cloudflare Worker is deployed and configured correctly. See deployment instructions in the repository.</small>`;
+            }
         }
 
         function generateCode(config, containerId, animationType) {
