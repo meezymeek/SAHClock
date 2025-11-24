@@ -145,6 +145,11 @@
         ctaUrl: 'https://texashempbusinesscouncil.com/zip/',
         ctaButtonBg: '#4a4a4a',
         ctaButtonText: '#ffffff',
+        showCTA2: false,
+        cta2Text: 'Hemp News',
+        cta2Url: 'https://texashempbusinesscouncil.com/news/',
+        cta2ButtonBg: '#5a5a5a',
+        cta2ButtonText: '#ffffff',
         size: 'medium',
         colors: {}
       };
@@ -301,9 +306,47 @@
             <h3 style="font-size: ${1.8 * sizeMultiplier}em; font-weight: 700; color: ${colors.hashtag}; text-align: center; margin: ${25 * sizeMultiplier}px 0 0 0;">#SAVEAMERICANHEMP</h3>
           ` : ''}
 
-          ${config.showCTA ? `
-            <div style="margin-top: 30px; text-align: center;">
-              <a href="${config.ctaUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 15px 30px; background: ${config.ctaButtonBg}; color: ${config.ctaButtonText}; text-decoration: none; font-size: 1.1em; font-weight: 700; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px;">${config.ctaText}</a>
+          ${config.showCTA || config.showCTA2 ? `
+            <div style="
+              display: flex;
+              flex-direction: column;
+              gap: 15px;
+              margin-top: 30px;
+              width: 100%;
+              max-width: 400px;
+              margin-left: auto;
+              margin-right: auto;
+            ">
+              ${config.showCTA ? `
+                <a href="${config.ctaUrl}" target="_blank" rel="noopener noreferrer" style="
+                  display: inline-block;
+                  padding: 15px 30px;
+                  background: ${config.ctaButtonBg};
+                  color: ${config.ctaButtonText};
+                  text-decoration: none;
+                  font-size: 1.1em;
+                  font-weight: 700;
+                  text-align: center;
+                  border-radius: 8px;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                ">${config.ctaText}</a>
+              ` : ''}
+              ${config.showCTA2 ? `
+                <a href="${config.cta2Url}" target="_blank" rel="noopener noreferrer" style="
+                  display: inline-block;
+                  padding: 15px 30px;
+                  background: ${config.cta2ButtonBg};
+                  color: ${config.cta2ButtonText};
+                  text-decoration: none;
+                  font-size: 1.1em;
+                  font-weight: 700;
+                  text-align: center;
+                  border-radius: 8px;
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                ">${config.cta2Text}</a>
+              ` : ''}
             </div>
           ` : ''}
         </div>
