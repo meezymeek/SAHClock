@@ -24,6 +24,15 @@
     <!-- html2canvas for screenshots -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXB0JB41PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RXB0JB41PZ');
+    </script>
+    
     <style>
         body {
             margin: 0;
@@ -812,10 +821,10 @@
 
                 <!-- Call to Action Buttons -->
                 <div class="cta-buttons">
-                    <a href="https://texashempbusinesscouncil.com/zip/" target="_blank" rel="noopener noreferrer" class="cta-button">
+                    <a href="https://texashempbusinesscouncil.com/zip/" target="_blank" rel="noopener noreferrer" class="cta-button" onclick="trackCTAClick('contact_legislators')">
                         Contact Your Legislators
                     </a>
-                    <a href="https://texashempbusinesscouncil.com/news/" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
+                    <a href="https://texashempbusinesscouncil.com/news/" target="_blank" rel="noopener noreferrer" class="cta-button secondary" onclick="trackCTAClick('hemp_news')">
                         Hemp News
                     </a>
                 </div>
@@ -1019,6 +1028,14 @@
 
         // Open template modal
         function openTemplateModal() {
+            // Track template modal open
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'template_modal_opened', {
+                    'event_category': 'engagement',
+                    'event_label': 'template_selector'
+                });
+            }
+            
             const modal = document.getElementById('templateModal');
             const grid = document.getElementById('templateGrid');
             
@@ -1058,6 +1075,16 @@
         function selectAndApplyTemplate(templateId) {
             const template = allTemplates.find(t => t.id === templateId);
             if (template) {
+                // Track template selection
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'template_selected', {
+                        'event_category': 'engagement',
+                        'event_label': template.name,
+                        'template_id': templateId,
+                        'template_author': template.author
+                    });
+                }
+                
                 applyTemplate(template, true);
                 closeTemplateModal();
             }
@@ -1216,6 +1243,17 @@
         // Load templates when page loads
         loadTemplates();
 
+        // Track CTA button clicks
+        function trackCTAClick(buttonType) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'cta_click', {
+                    'event_category': 'conversion',
+                    'event_label': buttonType,
+                    'template_id': currentTemplateId || 'default'
+                });
+            }
+        }
+
         // ========== END TEMPLATE SYSTEM ==========
 
         // Screenshot functionality for Instagram (4:5 ratio - 1080x1350px)
@@ -1308,6 +1346,15 @@
                     link.href = url;
                     link.click();
                     URL.revokeObjectURL(url);
+                    
+                    // Track screenshot capture
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'screenshot_captured', {
+                            'event_category': 'conversion',
+                            'event_label': currentTemplateId || 'default',
+                            'device_type': window.innerWidth <= 768 ? 'mobile' : 'desktop'
+                        });
+                    }
                 });
 
             } catch (error) {

@@ -25,56 +25,109 @@ Structure:
       "created": "YYYY-MM-DD",
       "description": "Template description",
       "config": {
-        "theme": "gray|dark",
-        "size": "small|medium|large",
+        "theme": "gray|dark|custom",
+        "size": "compact|medium|large",
         "showLogo": true|false,
+        "logoUrl": "https://example.com/logo.png",
+        "logoHeight": "80px",
         "showTitle": true|false,
         "showSubtitle": true|false,
         "showDescription": true|false,
         "showHashtag": true|false,
-        "showCTA": true|false
+        "showCTA": true|false,
+        "ctaText": "Button text",
+        "ctaUrl": "https://example.com",
+        "ctaButtonBg": "#4a4a4a",
+        "ctaButtonText": "#ffffff",
+        "showCTA2": true|false,
+        "cta2Text": "Button text",
+        "cta2Url": "https://example.com",
+        "cta2ButtonBg": "#5a5a5a",
+        "cta2ButtonText": "#ffffff",
+        "colors": {
+          "panelBackground": "#3d3d3d",
+          "panelText": "#ffffff",
+          "title": "#3d3d3d",
+          "subtitle": "#555555",
+          "description": "#555555",
+          "hashtag": "#3d3d3d",
+          "labels": "#888888",
+          "containerBackground": "#f0f0f0"
+        }
       }
     }
   ]
 }
 ```
 
-### 2. GitHub Actions Workflow
+### 2. Cloudflare Worker API
 
-**File:** `.github/workflows/save-template.yml`
+**File:** `cloudflare-worker/save-template-worker.js`
 
-**Trigger:** Manual workflow dispatch via GitHub API
+**Endpoint:** `https://api.savehempclock.com`
 
-**Inputs:**
-- `templateName` (required) - Name of the template
-- `templateAuthor` (required) - Author's name
-- `templateDescription` (required) - Template description
-- `templateConfig` (required) - JSON configuration object
+**Method:** POST with JSON body
+
+**Request Body:**
+```json
+{
+  "name": "Template Name",
+  "author": "Author Name (optional)",
+  "description": "Template description (optional)",
+  "config": { /* template configuration object */ }
+}
+```
 
 **Process:**
-1. Validates the template configuration JSON
-2. Generates a unique template ID based on name and timestamp
-3. Appends the new template to `templates.json`
-4. Commits and pushes changes
-5. Sends email notification to hayden.meek@grumpygears.com
+1. Validates the template data
+2. Fetches current `templates.json` from GitHub via API
+3. Generates a unique template ID based on name and timestamp
+4. Appends the new template to the templates array
+5. Commits changes directly to GitHub repository
+6. Optionally triggers email notification webhook (if configured)
+7. Returns success response with template ID
 
-**Required Secrets:**
-- `EMAIL_USERNAME` - SMTP username for email notifications
-- `EMAIL_PASSWORD` - SMTP password for email notifications
+**Required Environment Variables:**
+- `GITHUB_TOKEN` - Personal Access Token with repo write permissions
+- `GITHUB_OWNER` - Repository owner (e.g., "meezymeek")
+- `GITHUB_REPO` - Repository name (e.g., "SAHClock")
+- `EMAIL_WEBHOOK_URL` - (Optional) Webhook URL for email notifications
+
+**Response Time:** ~2-3 seconds (immediate feedback to user)
+
+**Deployment:** See `cloudflare-worker/DEPLOYMENT.md` for complete setup instructions
 
 ### 3. Widget Wizard (`widget-wizard.html`)
 
-**Save Template Feature:**
+**Template Loader:**
+- Dropdown at top of configuration panel
+- Displays all available templates from `templates.json`
+- Shows author name for non-System templates (e.g., "D8D (by Hayden Meek)")
+- Loads template configuration into form when selected
+- Allows users to modify loaded templates before applying
 
-1. **Button:** Green "Save as Template" button in the preview section
+**Customization Options:**
+- **Logo Settings:** URL and height
+- **Custom Colors:** 8 color pickers for complete customization
+- **CTA Button:** Text, URL, background color, text color
+- **CTA2 Button (Hemp News):** Text, URL, background color, text color
+- **Show/Hide Elements:** Logo, Title, Subtitle, Description, Hashtag, CTA, CTA2
+- **Size:** Compact, Medium, Large
+- **Animation:** Simple or Flip animation
+
+**Save Template Feature:**
+1. **Button:** Green "Save as Template" button next to "Copy to Clipboard"
 2. **Modal:** Appears when user clicks "Save as Template"
 3. **Form Fields:**
    - Template Name (required)
-   - Author Name (required)
-   - Description (required)
-4. **Process:** Currently shows manual instructions for running the GitHub workflow
-
-**Future Enhancement:** Add direct API integration to trigger GitHub workflow automatically
+   - Author Name (optional)
+   - Description (optional)
+4. **Process:** 
+   - POSTs template data to Cloudflare Worker API at `https://api.savehempclock.com`
+   - Shows real-time status (saving, success, error)
+   - Returns template ID on success
+   - Displays 5-10 minute deployment notice for GitHub Pages rebuild
+   - Auto-closes modal after 5 seconds on success
 
 ### 4. Main Site Template Selector (`index.html`)
 
@@ -91,61 +144,124 @@ Structure:
    - Highlights currently applied template
    - "Apply Template" button for each template
 
-3. **JavaScript Functionality:**
+3. **Logo Support:**
+   - Hidden `<img>` element with `countdown-logo` class
+   - Shows when template has `showLogo: true` and `logoUrl`
+   - Respects `logoHeight` configuration
+
+4. **JavaScript Functionality:**
    - Fetches templates from `templates.json` on page load
    - Checks localStorage for previously selected template
    - Auto-applies saved template on page load
-   - Applies template styling when user selects a template
+   - Applies all template configurations:
+     * CSS variables for flip panel colors (persists through animations)
+     * Logo display and customization
+     * Custom colors for all elements
+     * CTA button customization (text, URL, colors)
+     * CTA2 button customization and visibility
+     * Element visibility (title, subtitle, description, hashtag, CTA, CTA2)
    - Persists template selection in localStorage
 
 ## Template Application Logic
 
 When a template is applied, the system updates:
 
+### CSS Variables (Critical for Flip Animations)
+The system uses CSS variables to maintain custom colors through Flip library animations:
+```css
+:root {
+  --panel-bg: #3d3d3d;
+  --panel-text: #ffffff;
+}
+```
+These variables are applied using `document.documentElement.style.setProperty()` and persist across dynamically created DOM elements.
+
 ### Theme Colors
 - **Gray Theme (default):**
+  - CSS variables: `--panel-bg: #3d3d3d`, `--panel-text: #ffffff`
   - Body background: `linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%)`
   - Container background: `#f0f0f0`
   - Text colors: `#3d3d3d`, `#555`
-  - Flip panels: `#3d3d3d`
 
 - **Dark Theme:**
+  - CSS variables: `--panel-bg: #1a1a1a`, `--panel-text: #ffffff`
   - Body background: `linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)`
   - Container background: `#2a2a2a`
   - Text colors: `#f0f0f0`, `#c0c0c0`
-  - Flip panels: `#1a1a1a`
+
+- **Custom Theme:**
+  - CSS variables set from `config.colors.panelBackground` and `config.colors.panelText`
+  - All colors customizable via `config.colors` object
+  - 8 color options: panel background/text, title, subtitle, description, hashtag, labels, container background
+
+### Logo Customization
+- Display controlled by `showLogo` boolean
+- Image source from `logoUrl`
+- Height from `logoHeight` (CSS value like "80px", "5em")
+
+### CTA Button Customization
+- **Primary CTA:**
+  - Text: `ctaText`
+  - URL: `ctaUrl`
+  - Background color: `ctaButtonBg`
+  - Text color: `ctaButtonText`
+
+- **Secondary CTA2 (Hemp News):**
+  - Visibility: `showCTA2`
+  - Text: `cta2Text`
+  - URL: `cta2Url`
+  - Background color: `cta2ButtonBg`
+  - Text color: `cta2ButtonText`
 
 ### Element Visibility
+- Logo (`showLogo`)
 - Title (`showTitle`)
 - Subtitle (`showSubtitle`)
 - Description (`showDescription`)
 - Hashtag (`showHashtag`)
-- CTA Buttons (`showCTA`)
+- CTA Button (`showCTA`)
+- CTA2 Button (`showCTA2`)
 
 ## User Flow
 
 ### Saving a Template (Automated via Cloudflare Worker)
 
 1. User configures widget in `widget-wizard.html`
+   - Optionally loads existing template as starting point
+   - Customizes logo, colors, buttons, visibility options
 2. Clicks "Save as Template" button
-3. Fills in template metadata (name, author, description)
-4. Clicks "Save" button
-5. Widget wizard POSTs template data to `https://api.savehempclock.com`
-6. Cloudflare Worker:
-   - Validates template data
-   - Fetches current `templates.json` from GitHub
-   - Appends new template with unique ID
-   - Commits changes via GitHub API
-   - Returns success message to user
-7. User sees "Template saved successfully!" with template ID
-8. Template is immediately available to all users
+3. Modal appears with form fields
+4. Fills in template metadata:
+   - Name (required)
+   - Author (optional, defaults to "Anonymous")
+   - Description (optional)
+5. Clicks "Save" button in modal
+6. Widget wizard POSTs template data to `https://api.savehempclock.com`
+7. Cloudflare Worker:
+   - Validates template data (name and config required)
+   - Fetches current `templates.json` from GitHub via API
+   - Generates unique ID: `{name-slug}-{timestamp}`
+   - Appends new template to array
+   - Commits changes directly to GitHub repository
+   - Optionally triggers email notification webhook
+   - Returns success response with template ID
+8. User sees real-time status updates:
+   - "Saving template..." (yellow background)
+   - "✓ Template saved successfully!" with ID (green background)
+   - "⏱️ Note: It may take 5-10 minutes for your template to appear..." (deployment notice)
+9. Modal auto-closes after 5 seconds
+10. Template available to all users after GitHub Pages rebuild (~5-10 minutes)
 
-**Total time:** ~2-3 seconds! ✨
+**Total API time:** ~2-3 seconds ✨
 
 **Requirements:**
-- Cloudflare Worker must be deployed (see `cloudflare-worker/DEPLOYMENT.md`)
-- Worker must have GitHub Personal Access Token configured
-- API endpoint: `https://api.savehempclock.com`
+- Cloudflare Worker deployed at `api.savehempclock.com`
+- Worker environment variables configured:
+  * `GITHUB_TOKEN` - Personal Access Token with repo write access
+  * `GITHUB_OWNER` - Repository owner
+  * `GITHUB_REPO` - Repository name
+  * `EMAIL_WEBHOOK_URL` - (Optional) for notifications
+- See `cloudflare-worker/DEPLOYMENT.md` for complete setup instructions
 
 ### Applying a Template
 
@@ -175,7 +291,7 @@ When a template is applied, the system updates:
 
 ## Default Templates
 
-Two system templates are provided by default:
+System templates provided by default:
 
 1. **Gray Default**
    - ID: `gray-default`
@@ -188,6 +304,17 @@ Two system templates are provided by default:
    - Dark theme with minimal text
    - Shows: Title, Subtitle, Hashtag
    - Hides: Logo, Description, CTA buttons
+
+Example community template with full customization:
+
+3. **D8D w/ Hemp News Button**
+   - ID: `d8d-w-hemp-news-button-1764015868485`
+   - Author: Hayden Meek
+   - Custom theme with brand colors
+   - Logo: Delta 8 Denton branding
+   - Custom colors for all elements
+   - Both CTA buttons enabled with custom styling
+   - Demonstrates full feature set including CTA2
 
 ## Future Enhancements
 
@@ -210,18 +337,53 @@ Two system templates are provided by default:
 
 ## Testing Checklist
 
+### Template System
 - [x] Templates load correctly from `templates.json`
 - [x] Template selector button appears and is clickable
 - [x] Template modal opens and displays all templates
 - [x] Template cards render with correct information
 - [x] Currently applied template is highlighted
-- [ ] Template styling applies correctly (colors, visibility)
-- [ ] Template selection saves to localStorage
-- [ ] Template auto-loads on page refresh
-- [ ] Modal closes when clicking outside
-- [ ] Modal closes when clicking X button
-- [ ] Works on mobile devices
-- [ ] Works across different browsers
+- [x] Template styling applies correctly (colors, visibility)
+- [x] Template selection saves to localStorage
+- [x] Template auto-loads on page refresh
+- [x] Modal closes when clicking outside
+- [x] Modal closes when clicking X button
+
+### Logo Support
+- [x] Logo displays when `showLogo: true` and `logoUrl` provided
+- [x] Logo respects custom `logoHeight` setting
+- [x] Logo hides when `showLogo: false`
+
+### Custom Colors
+- [x] CSS variables (--panel-bg, --panel-text) persist through animations
+- [x] Custom colors apply to all 8 configurable elements
+- [x] Colors work with both simple and animated widgets
+
+### CTA Buttons
+- [x] Primary CTA button customizable (text, URL, colors)
+- [x] CTA2 button (Hemp News) shows/hides based on `showCTA2`
+- [x] CTA2 button fully customizable (text, URL, colors)
+- [x] Both buttons render independently
+
+### Template Saving
+- [x] Cloudflare Worker API endpoint operational
+- [x] Template saves in ~2-3 seconds
+- [x] Unique template IDs generated correctly
+- [x] GitHub commits successful
+- [x] User receives success/error feedback
+- [x] Form clears after successful save
+
+### Widget Integration
+- [x] Widget wizard loads templates in dropdown
+- [x] Template loader populates all form fields
+- [x] Modified templates work in preview
+- [x] Generated code includes all customizations
+- [x] Both simple and animated widgets support all features
+
+### Cross-Browser & Mobile
+- [ ] Template system works on Chrome, Firefox, Safari, Edge
+- [ ] Mobile responsive design functions correctly
+- [ ] Touch interactions work on mobile devices
 
 ## Troubleshooting
 
@@ -264,12 +426,19 @@ Two system templates are provided by default:
 
 - Template configurations only affect CSS/display properties
 - No executable code is stored in templates
-- GitHub workflow requires authentication
-- Email notifications are sent to predetermined address only
+- Cloudflare Worker validates all input data
+- GitHub API access requires Personal Access Token
+- CORS headers configured for browser security
+- Email notifications sent to webhook (if configured)
+- Template IDs include timestamp to prevent collisions
+- GitHub commits attributed to "SAHClock Template Bot"
 
 ## Performance Notes
 
 - `templates.json` is fetched once on page load
-- Template application is client-side only (no server requests)
+- Template application is client-side only (no server requests after initial load)
 - LocalStorage is checked on every page load
 - Modal template cards are generated dynamically (no performance impact when closed)
+- CSS variables provide zero-overhead color persistence
+- Cloudflare Worker runs on edge network (~2-3 second response time)
+- GitHub Pages rebuild takes 5-10 minutes after template save

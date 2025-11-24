@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Widget Customization Wizard - SAH Countdown</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RXB0JB41PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RXB0JB41PZ');
+    </script>
+    
     <style>
         * {
             box-sizing: border-box;
@@ -539,6 +549,15 @@
             const template = allTemplates.find(t => t.id === templateId);
             if (!template) return;
             
+            // Track template loading
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'template_loaded', {
+                    'event_category': 'engagement',
+                    'event_label': template.name,
+                    'template_id': templateId
+                });
+            }
+            
             const config = template.config;
             
             // Show/hide color options based on theme
@@ -760,6 +779,16 @@
                 const data = await response.json();
 
                 if (response.ok && data.success) {
+                    // Track template save success
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'template_saved', {
+                            'event_category': 'conversion',
+                            'event_label': templateName,
+                            'template_id': data.templateId,
+                            'template_author': templateAuthor || 'Anonymous'
+                        });
+                    }
+                    
                     // Success
                     statusDiv.style.background = '#d4edda';
                     statusDiv.style.color = '#155724';
@@ -878,6 +907,23 @@
             const codeOutput = document.getElementById('codeOutput');
             codeOutput.select();
             document.execCommand('copy');
+
+            // Track widget code copy
+            if (typeof gtag !== 'undefined') {
+                const animationType = document.querySelector('input[name="animation"]:checked').value;
+                const size = document.querySelector('input[name="size"]:checked').value;
+                const selectedTemplateId = document.getElementById('templateLoader').value;
+                const selectedTemplate = allTemplates.find(t => t.id === selectedTemplateId);
+                
+                gtag('event', 'widget_code_copied', {
+                    'event_category': 'conversion',
+                    'event_label': animationType,
+                    'animation_type': animationType,
+                    'widget_size': size,
+                    'template_id': selectedTemplateId,
+                    'template_name': selectedTemplate ? selectedTemplate.name : 'unknown'
+                });
+            }
 
             const button = document.querySelector('.copy-button');
             button.textContent = 'Copied!';
