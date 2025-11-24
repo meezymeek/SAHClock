@@ -78,6 +78,40 @@
         "theme": "gray",
         "showTitle": true
       }
+    },
+    {
+      "id": "d8d-1764012596117",
+      "name": "D8D",
+      "author": "Hayden Meek",
+      "created": "2025-11-24",
+      "description": "Delta 8 Denton Branded Template",
+      "config": {
+        "container": "#widgetPreview",
+        "theme": "custom",
+        "size": "medium",
+        "showLogo": true,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": true,
+        "showHashtag": true,
+        "showCTA": true,
+        "logoUrl": "https://www.delta8denton.com/wp-content/uploads/2022/02/cropped-Asset-24-350x122.png",
+        "logoHeight": "40px",
+        "ctaText": "Contact Your Legislators",
+        "ctaUrl": "https://texashempbusinesscouncil.com/zip/",
+        "ctaButtonBg": "#81d2c7",
+        "ctaButtonText": "#ffffff",
+        "colors": {
+          "panelBackground": "#fcb07e",
+          "panelText": "#ffffff",
+          "title": "#ffffff",
+          "subtitle": "#ffffff",
+          "description": "#ffffff",
+          "hashtag": "#fcb07e",
+          "labels": "#ffffff",
+          "containerBackground": "#7389ae"
+        }
+      }
     }
   ]
 }
