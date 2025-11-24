@@ -53,6 +53,19 @@
             align-items: center;
         }
 
+        /* Logo */
+        .countdown-logo {
+            display: none;
+            max-width: 100%;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        .countdown-logo.active {
+            display: block;
+        }
+
         .countdown-title {
             font-size: 3.125em;
             font-weight: bold;
@@ -694,6 +707,9 @@
 <body>
     <div class="countdown-container">
         <div class="countdown-wrapper">
+            <!-- Logo (hidden by default) -->
+            <img class="countdown-logo" id="countdown-logo" src="" alt="Logo">
+            
             <!-- Title -->
             <h1 class="countdown-title">Save American Hemp</h1>
 
@@ -1052,96 +1068,105 @@
                 localStorage.setItem('selectedTemplate', template.id);
             }
             
-            // Apply theme colors
+            // Get elements
             const body = document.body;
             const container = document.querySelector('.countdown-container');
-            const tickPanels = document.querySelectorAll('.tick-flip-panel');
-            const staticDigits = document.querySelectorAll('.static-digit');
-            const tickLabels = document.querySelectorAll('.tick-label');
-            const staticLabels = document.querySelectorAll('.static-label');
+            const logo = document.getElementById('countdown-logo');
+            const title = document.querySelector('.countdown-title');
+            const subtitle = document.querySelector('.countdown-subtitle');
+            const description = document.querySelector('.countdown-description');
+            const hashtag = document.querySelector('.countdown-hashtag');
+            const ctaButtons = document.querySelector('.cta-buttons');
+            const ctaButton = document.querySelector('.cta-button');
             
+            // Handle logo
+            if (config.showLogo && config.logoUrl) {
+                logo.src = config.logoUrl;
+                logo.style.height = config.logoHeight || '80px';
+                logo.classList.add('active');
+            } else {
+                logo.classList.remove('active');
+            }
+            
+            // Apply colors based on theme
             if (config.theme === 'dark') {
                 body.style.background = 'linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)';
                 container.style.background = '#2a2a2a';
-                container.style.color = '#f0f0f0';
+                title.style.color = '#f0f0f0';
+                subtitle.style.color = '#c0c0c0';
+                description.style.color = '#c0c0c0';
+                hashtag.style.color = '#f0f0f0';
                 
-                // Update title and text colors
-                document.querySelector('.countdown-title').style.color = '#f0f0f0';
-                document.querySelector('.countdown-subtitle').style.color = '#c0c0c0';
-                document.querySelector('.countdown-description').style.color = '#c0c0c0';
-                document.querySelector('.countdown-hashtag').style.color = '#f0f0f0';
-                
-                // Update tick panels and labels
-                tickPanels.forEach(panel => {
-                    panel.style.backgroundColor = '#1a1a1a !important';
+                // Apply to flip panels with higher specificity
+                document.querySelectorAll('.tick-flip-panel').forEach(panel => {
+                    panel.style.setProperty('background-color', '#1a1a1a', 'important');
+                    panel.style.setProperty('color', '#ffffff', 'important');
                 });
-                staticDigits.forEach(digit => {
+                document.querySelectorAll('.static-digit').forEach(digit => {
                     digit.style.backgroundColor = '#1a1a1a';
+                    digit.style.color = '#ffffff';
                 });
-                tickLabels.forEach(label => {
-                    label.style.color = '#888';
-                });
-                staticLabels.forEach(label => {
+                document.querySelectorAll('.tick-label, .static-label').forEach(label => {
                     label.style.color = '#888';
                 });
             } else if (config.theme === 'custom' && config.colors) {
-                // Custom theme with custom colors
+                // Custom theme
                 const colors = config.colors;
-                
                 container.style.background = colors.containerBackground || '#f0f0f0';
-                document.querySelector('.countdown-title').style.color = colors.title || '#3d3d3d';
-                document.querySelector('.countdown-subtitle').style.color = colors.subtitle || '#555';
-                document.querySelector('.countdown-description').style.color = colors.description || '#555';
-                document.querySelector('.countdown-hashtag').style.color = colors.hashtag || '#3d3d3d';
+                title.style.color = colors.title || '#3d3d3d';
+                subtitle.style.color = colors.subtitle || '#555';
+                description.style.color = colors.description || '#555';
+                hashtag.style.color = colors.hashtag || '#3d3d3d';
                 
-                // Update tick panels and labels
-                tickPanels.forEach(panel => {
-                    panel.style.backgroundColor = (colors.panelBackground || '#3d3d3d') + ' !important';
-                    panel.style.color = (colors.panelText || '#ffffff') + ' !important';
+                // Apply custom colors to flip panels
+                document.querySelectorAll('.tick-flip-panel').forEach(panel => {
+                    panel.style.setProperty('background-color', colors.panelBackground || '#3d3d3d', 'important');
+                    panel.style.setProperty('color', colors.panelText || '#ffffff', 'important');
                 });
-                staticDigits.forEach(digit => {
+                document.querySelectorAll('.static-digit').forEach(digit => {
                     digit.style.backgroundColor = colors.panelBackground || '#3d3d3d';
                     digit.style.color = colors.panelText || '#ffffff';
                 });
-                tickLabels.forEach(label => {
-                    label.style.color = colors.labels || '#888';
-                });
-                staticLabels.forEach(label => {
+                document.querySelectorAll('.tick-label, .static-label').forEach(label => {
                     label.style.color = colors.labels || '#888';
                 });
             } else {
                 // Gray theme (default)
                 body.style.background = 'linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%)';
                 container.style.background = '#f0f0f0';
-                container.style.color = '';
+                title.style.color = '#3d3d3d';
+                subtitle.style.color = '#555';
+                description.style.color = '#555';
+                hashtag.style.color = '#3d3d3d';
                 
-                document.querySelector('.countdown-title').style.color = '#3d3d3d';
-                document.querySelector('.countdown-subtitle').style.color = '#555';
-                document.querySelector('.countdown-description').style.color = '#555';
-                document.querySelector('.countdown-hashtag').style.color = '#3d3d3d';
-                
-                // Update tick panels and labels
-                tickPanels.forEach(panel => {
-                    panel.style.backgroundColor = '#3d3d3d !important';
+                document.querySelectorAll('.tick-flip-panel').forEach(panel => {
+                    panel.style.setProperty('background-color', '#3d3d3d', 'important');
+                    panel.style.setProperty('color', '#ffffff', 'important');
                 });
-                staticDigits.forEach(digit => {
+                document.querySelectorAll('.static-digit').forEach(digit => {
                     digit.style.backgroundColor = '#3d3d3d';
+                    digit.style.color = '#ffffff';
                 });
-                tickLabels.forEach(label => {
-                    label.style.color = '#888';
-                });
-                staticLabels.forEach(label => {
+                document.querySelectorAll('.tick-label, .static-label').forEach(label => {
                     label.style.color = '#888';
                 });
             }
             
-            // Show/hide elements based on config
-            const title = document.querySelector('.countdown-title');
-            const subtitle = document.querySelector('.countdown-subtitle');
-            const description = document.querySelector('.countdown-description');
-            const hashtag = document.querySelector('.countdown-hashtag');
-            const ctaButtons = document.querySelector('.cta-buttons');
+            // Handle CTA button customization
+            if (config.showCTA && config.ctaText) {
+                ctaButton.textContent = config.ctaText;
+            }
+            if (config.showCTA && config.ctaUrl) {
+                ctaButton.href = config.ctaUrl;
+            }
+            if (config.showCTA && config.ctaButtonBg) {
+                ctaButton.style.background = config.ctaButtonBg;
+            }
+            if (config.showCTA && config.ctaButtonText) {
+                ctaButton.style.color = config.ctaButtonText;
+            }
             
+            // Show/hide elements based on config
             if (config.showTitle !== undefined) {
                 title.style.display = config.showTitle ? '' : 'none';
             }
