@@ -113,6 +113,45 @@
           "containerBackground": "#ffffff"
         }
       }
+    },
+    {
+      "id": "the-happy-cactus-branding-1764355195664",
+      "name": "The Happy Cactus Branding",
+      "author": "Hayden Meek",
+      "created": "2025-11-28",
+      "description": "Branding from The Happy Catus in Austin, TX!",
+      "config": {
+        "container": "#widgetPreview",
+        "theme": "custom",
+        "size": "medium",
+        "showLogo": true,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": true,
+        "showHashtag": true,
+        "showCTA": true,
+        "showCTA2": true,
+        "logoUrl": "https://cdn11.bigcommerce.com/s-ff9q4vkf26/images/stencil/800x200/website-header-06-06_1740439297__89887.original.png",
+        "logoHeight": "50px",
+        "ctaText": "Contact Your Legislators",
+        "ctaUrl": "https://texashempbusinesscouncil.com/federal-hemp-action/",
+        "ctaButtonBg": "#e64826",
+        "ctaButtonText": "#ffffff",
+        "cta2Text": "Support The Happy Cactus",
+        "cta2Url": "https://thehappycactusatx.com/",
+        "cta2ButtonBg": "#e64827",
+        "cta2ButtonText": "#ffffff",
+        "colors": {
+          "panelBackground": "#e74727",
+          "panelText": "#ffffff",
+          "title": "#ffffff",
+          "subtitle": "#ffffff",
+          "description": "#ffffff",
+          "hashtag": "#e74727",
+          "labels": "#ffffff",
+          "containerBackground": "#f1bbba"
+        }
+      }
     }
   ]
 }
