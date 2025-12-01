@@ -23,6 +23,7 @@ Structure:
       "name": "Template Name",
       "author": "Author Name",
       "created": "YYYY-MM-DD",
+      "lastModified": "YYYY-MM-DD (optional, added when template is updated)",
       "description": "Template description",
       "config": {
         "theme": "gray|dark|custom",
@@ -129,6 +130,20 @@ Structure:
    - Displays 5-10 minute deployment notice for GitHub Pages rebuild
    - Auto-closes modal after 5 seconds on success
 
+**Update Template Feature:**
+1. **Button:** Orange "Update '[Template Name]'" button (appears between "Copy to Clipboard" and "Save as Template")
+2. **Visibility:** Only shows when a user-created template is loaded (not for System templates)
+3. **Confirmation:** Shows confirmation dialog explaining the update will overwrite the existing template
+4. **Process:**
+   - POSTs update request to Cloudflare Worker API with `action: 'update'` and `templateId`
+   - Updates only the template's `config` field
+   - Adds `lastModified` date to the template
+   - Preserves original `created` date, `name`, `author`, and `description`
+   - Shows real-time status (updating, success, error)
+   - Button changes to "✓ Updated!" with green background on success
+   - Displays deployment notice (5-10 minutes for GitHub Pages rebuild)
+   - Resets button state after 3 seconds
+
 ### 4. Main Site Template Selector (`index.html`)
 
 **Components:**
@@ -223,6 +238,48 @@ These variables are applied using `document.documentElement.style.setProperty()`
 - CTA2 Button (`showCTA2`)
 
 ## User Flow
+
+### Updating an Existing Template
+
+1. User opens `widget-wizard.html`
+2. Selects an existing user-created template from dropdown (e.g., "D8D")
+3. "Update 'D8D'" button appears (orange button between Copy and Save buttons)
+4. User modifies configuration (e.g., fixes wrong button link)
+5. Clicks "Update 'D8D'" button
+6. Confirmation dialog appears: "Update the 'D8D' template? This will overwrite..."
+7. User confirms
+8. Widget wizard POSTs update to `https://api.savehempclock.com`:
+   ```json
+   {
+     "action": "update",
+     "templateId": "d8d-1764015868485",
+     "config": { /* updated configuration */ }
+   }
+   ```
+9. Cloudflare Worker:
+   - Validates update request
+   - Fetches current `templates.json`
+   - Finds template by ID
+   - Updates template's `config` field
+   - Adds/updates `lastModified` field with current date
+   - Commits changes to GitHub with message "Update widget template: D8D"
+   - Returns success response
+10. User sees real-time status:
+    - "Updating..." (button disabled)
+    - "✓ Updated!" (green background)
+    - Alert: "Template 'D8D' updated successfully! Note: 5-10 minutes..."
+11. Button resets after 3 seconds
+12. Changes available after GitHub Pages rebuild (~5-10 minutes)
+
+**Total API time:** ~2-3 seconds ✨
+
+**Key Features:**
+- No modal form needed (uses existing loaded template)
+- Simple confirmation dialog
+- Sends `action: 'update'` with `templateId`
+- Preserves original template metadata (name, author, created date)
+- Only updates `config` and adds `lastModified` date
+- Only available for user-created templates (System templates are protected)
 
 ### Saving a Template (Automated via Cloudflare Worker)
 
@@ -373,6 +430,18 @@ Example community template with full customization:
 - [x] User receives success/error feedback
 - [x] Form clears after successful save
 
+### Template Updating
+- [ ] Update button only shows for user-created templates
+- [ ] Update button hidden for System templates
+- [ ] Update button text shows correct template name
+- [ ] Confirmation dialog displays before update
+- [ ] Update request succeeds in ~2-3 seconds
+- [ ] Template config updates correctly
+- [ ] lastModified field added/updated
+- [ ] Original metadata preserved (name, author, created)
+- [ ] User receives success/error feedback
+- [ ] Button state resets after update
+
 ### Widget Integration
 - [x] Widget wizard loads templates in dropdown
 - [x] Template loader populates all form fields
@@ -410,7 +479,16 @@ Example community template with full customization:
 3. Test template on main site
 4. Update documentation if new config options are added
 
-### Modifying Existing Templates
+### Updating an Existing Template (via Widget Wizard)
+1. Open widget wizard and select the template to update
+2. Make desired changes to the configuration
+3. Click "Update '[Template Name]'" button
+4. Confirm the update in the dialog
+5. Wait ~2-3 seconds for API response
+6. Template updates with `lastModified` date added
+7. Changes available after GitHub Pages rebuild (~5-10 minutes)
+
+### Modifying Existing Templates (Direct Edit)
 1. Directly edit `templates.json`
 2. Commit changes
 3. Deploy to production

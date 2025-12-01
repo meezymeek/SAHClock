@@ -483,6 +483,7 @@
             <textarea id="codeOutput" readonly></textarea>
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button class="copy-button" onclick="copyCode()" style="flex: 1;">Copy to Clipboard</button>
+                <button class="copy-button" id="updateTemplateButton" onclick="showUpdateTemplateModal()" style="flex: 1; display: none; background: linear-gradient(135deg, #FF8C00 0%, #FF6347 100%);">Update Template</button>
                 <button class="copy-button" onclick="showSaveTemplateModal()" style="flex: 1; background: linear-gradient(135deg, #228B22 0%, #006400 100%);">Save as Template</button>
             </div>
         </div>
@@ -520,6 +521,7 @@
         let currentWidget = null;
         let currentConfig = null;
         let allTemplates = [];
+        let loadedTemplateId = null; // Track which template is currently loaded
 
         // Load available templates
         async function loadAvailableTemplates() {
@@ -554,10 +556,21 @@
 
         // Load template into form  
         function loadTemplateIntoForm(templateId) {
-            if (!templateId) return;
+            if (!templateId) {
+                loadedTemplateId = null;
+                updateButtonVisibility();
+                return;
+            }
             
             const template = allTemplates.find(t => t.id === templateId);
-            if (!template) return;
+            if (!template) {
+                loadedTemplateId = null;
+                updateButtonVisibility();
+                return;
+            }
+            
+            // Store the loaded template ID
+            loadedTemplateId = templateId;
             
             // Track template loading
             if (typeof gtag !== 'undefined') {
@@ -625,6 +638,27 @@
             
             // Update the widget with loaded config
             updateWidget();
+            
+            // Update button visibility based on loaded template
+            updateButtonVisibility();
+        }
+
+        // Show/hide update button based on loaded template
+        function updateButtonVisibility() {
+            const updateButton = document.getElementById('updateTemplateButton');
+            if (!updateButton) return;
+            
+            if (loadedTemplateId) {
+                const template = allTemplates.find(t => t.id === loadedTemplateId);
+                if (template && template.author !== 'System') {
+                    updateButton.style.display = 'block';
+                    updateButton.textContent = `Update '${template.name}'`;
+                } else {
+                    updateButton.style.display = 'none';
+                }
+            } else {
+                updateButton.style.display = 'none';
+            }
         }
 
         // Update preview and code when any setting changes
@@ -755,6 +789,87 @@
         function closeSaveTemplateModal() {
             document.getElementById('saveTemplateModal').classList.remove('active');
             document.getElementById('saveStatus').style.display = 'none';
+        }
+
+        function showUpdateTemplateModal() {
+            if (!loadedTemplateId) return;
+            
+            const template = allTemplates.find(t => t.id === loadedTemplateId);
+            if (!template) return;
+            
+            const confirmMessage = `Update the '${template.name}' template?\n\nThis will overwrite the existing template. The changes will be available to everyone after GitHub Pages rebuilds (~5-10 minutes).`;
+            
+            if (confirm(confirmMessage)) {
+                updateTemplate();
+            }
+        }
+
+        async function updateTemplate() {
+            if (!loadedTemplateId) {
+                alert('No template loaded');
+                return;
+            }
+
+            const template = allTemplates.find(t => t.id === loadedTemplateId);
+            if (!template) {
+                alert('Template not found');
+                return;
+            }
+
+            // Show updating status
+            const updateButton = document.getElementById('updateTemplateButton');
+            const originalText = updateButton.textContent;
+            updateButton.textContent = 'Updating...';
+            updateButton.disabled = true;
+
+            try {
+                // Call Cloudflare Worker API with update action
+                const response = await fetch('https://api.savehempclock.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'update',
+                        templateId: loadedTemplateId,
+                        config: currentConfig
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Track template update success
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'template_updated', {
+                            'event_category': 'conversion',
+                            'event_label': template.name,
+                            'template_id': loadedTemplateId
+                        });
+                    }
+                    
+                    // Success
+                    updateButton.textContent = '✓ Updated!';
+                    updateButton.style.background = '#28a745';
+                    
+                    alert(`Template '${template.name}' updated successfully!\n\nNote: It may take 5-10 minutes for the changes to appear as GitHub Pages rebuilds the site.`);
+                    
+                    // Reset button after 3 seconds
+                    setTimeout(() => {
+                        updateButton.textContent = originalText;
+                        updateButton.style.background = '';
+                        updateButton.disabled = false;
+                    }, 3000);
+                } else {
+                    // API returned error
+                    throw new Error(data.error || data.details || 'Unknown error occurred');
+                }
+            } catch (error) {
+                console.error('Update template error:', error);
+                alert(`Failed to update template: ${error.message}\n\nMake sure the Cloudflare Worker is deployed and configured correctly.`);
+                updateButton.textContent = originalText;
+                updateButton.disabled = false;
+            }
         }
 
         async function saveTemplate() {

@@ -36,18 +36,10 @@ export default {
     try {
       // Parse request body
       const body = await request.json();
-      const { name, author, description, config } = body;
-
-      // Validate required fields
-      if (!name || !config) {
-        return new Response(JSON.stringify({ error: 'Missing required fields: name and config' }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
+      const { action, templateId, name, author, description, config } = body;
 
       // Validate config structure
-      if (typeof config !== 'object') {
+      if (!config || typeof config !== 'object') {
         return new Response(JSON.stringify({ error: 'Config must be an object' }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -71,22 +63,63 @@ export default {
       const fileData = await getResponse.json();
       const currentContent = JSON.parse(atob(fileData.content));
 
-      // Generate unique template ID
-      const timestamp = Date.now();
-      const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + timestamp;
+      let resultTemplateId;
+      let commitMessage;
 
-      // Create new template object
-      const newTemplate = {
-        id,
-        name,
-        author: author || 'Anonymous',
-        created: new Date().toISOString().split('T')[0],
-        description: description || '',
-        config,
-      };
+      // Handle UPDATE action
+      if (action === 'update') {
+        if (!templateId) {
+          return new Response(JSON.stringify({ error: 'Missing required field: templateId for update action' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
 
-      // Add to templates array
-      currentContent.templates.push(newTemplate);
+        // Find template by ID
+        const templateIndex = currentContent.templates.findIndex(t => t.id === templateId);
+        if (templateIndex === -1) {
+          return new Response(JSON.stringify({ error: `Template not found: ${templateId}` }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        // Update the template config and add lastModified date
+        currentContent.templates[templateIndex].config = config;
+        currentContent.templates[templateIndex].lastModified = new Date().toISOString().split('T')[0];
+
+        resultTemplateId = templateId;
+        commitMessage = `Update widget template: ${currentContent.templates[templateIndex].name}`;
+
+      } else {
+        // Handle CREATE action (default behavior)
+        if (!name) {
+          return new Response(JSON.stringify({ error: 'Missing required field: name' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        // Generate unique template ID
+        const timestamp = Date.now();
+        const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + timestamp;
+
+        // Create new template object
+        const newTemplate = {
+          id,
+          name,
+          author: author || 'Anonymous',
+          created: new Date().toISOString().split('T')[0],
+          description: description || '',
+          config,
+        };
+
+        // Add to templates array
+        currentContent.templates.push(newTemplate);
+
+        resultTemplateId = id;
+        commitMessage = `Add new widget template: ${name}`;
+      }
 
       // Encode updated content
       const updatedContent = btoa(JSON.stringify(currentContent, null, 2));
@@ -102,7 +135,7 @@ export default {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: `Add new widget template: ${name}`,
+          message: commitMessage,
           content: updatedContent,
           sha: fileData.sha,
           committer: {
@@ -118,7 +151,7 @@ export default {
       }
 
       // Optional: Trigger email notification webhook
-      if (env.EMAIL_WEBHOOK_URL) {
+      if (env.EMAIL_WEBHOOK_URL && action !== 'update') {
         try {
           await fetch(env.EMAIL_WEBHOOK_URL, {
             method: 'POST',
@@ -138,8 +171,8 @@ export default {
       // Return success
       return new Response(JSON.stringify({
         success: true,
-        message: 'Template saved successfully!',
-        templateId: id,
+        message: action === 'update' ? 'Template updated successfully!' : 'Template saved successfully!',
+        templateId: resultTemplateId,
       }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
