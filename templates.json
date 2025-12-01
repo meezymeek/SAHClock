@@ -152,6 +152,45 @@
           "containerBackground": "#f1bbba"
         }
       }
+    },
+    {
+      "id": "tx-cannabis-tv-brandin-1764619979067",
+      "name": "TX Cannabis TV Brandin",
+      "author": "Hayden Meek",
+      "created": "2025-12-01",
+      "description": "TX Cannabis TV Branding",
+      "config": {
+        "container": "#widgetPreview",
+        "theme": "custom",
+        "size": "medium",
+        "showLogo": true,
+        "showTitle": true,
+        "showSubtitle": true,
+        "showDescription": true,
+        "showHashtag": true,
+        "showCTA": true,
+        "showCTA2": true,
+        "logoUrl": "https://scontent-hou1-1.cdninstagram.com/v/t51.2885-19/428585558_967217854970579_7294582446079685290_n.jpg?stp=dst-jpg_s206x206_tt6&_nc_cat=103&ccb=7-5&_nc_sid=bf7eb4&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4zMjAuQzMifQ%3D%3D&_nc_ohc=cfYVaXJLzooQ7kNvwGtGaAC&_nc_oc=Adn1ln9Ol0_4HCed_JZ5w4U00zvW1SlTNyQ6plk7fFd3UUVI1m2_gN-UUv9j7AAdBWX_hXlfIm5DYMQ8WOLndaCO&_nc_zt=24&_nc_ht=scontent-hou1-1.cdninstagram.com&oh=00_AfieWwXNX4HjUmlnZVT8Lpk7-dZaLlrdrN-2cEbFJodoEg&oe=6933D96B",
+        "logoHeight": "180px",
+        "ctaText": "Contact Your Legislators",
+        "ctaUrl": "https://texashempbusinesscouncil.com/federal-hemp-action/",
+        "ctaButtonBg": "#0d8006",
+        "ctaButtonText": "#ffffff",
+        "cta2Text": "Follow Texas Cannabis TV",
+        "cta2Url": "https://www.instagram.com/texascannabistv/",
+        "cta2ButtonBg": "#0d8006",
+        "cta2ButtonText": "#ffffff",
+        "colors": {
+          "panelBackground": "#0d8006",
+          "panelText": "#ffffff",
+          "title": "#0d8006",
+          "subtitle": "#0d8006",
+          "description": "#0d8006",
+          "hashtag": "#0d8006",
+          "labels": "#16331b",
+          "containerBackground": "#ffffff"
+        }
+      }
     }
   ]
 }
