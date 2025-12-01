@@ -95,7 +95,7 @@
         "logoUrl": "https://texashempbusinesscouncil.com/wp-content/uploads/2025/07/UPDATED-texas-hemp-logo-green-circle-1-01.webp",
         "logoHeight": "80px",
         "ctaText": "Contact Your Legislators",
-        "ctaUrl": "https://texashempbusinesscouncil.com/zip/",
+        "ctaUrl": "https://texashempbusinesscouncil.com/federal-hemp-action/",
         "ctaButtonBg": "#16331b",
         "ctaButtonText": "#ffffff",
         "cta2Text": "Hemp News",
@@ -112,7 +112,8 @@
           "labels": "#888888",
           "containerBackground": "#ffffff"
         }
-      }
+      },
+      "lastModified": "2025-12-01"
     },
     {
       "id": "the-happy-cactus-branding-1764355195664",
