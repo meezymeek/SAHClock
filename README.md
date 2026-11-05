@@ -1,6 +1,13 @@
 # SAHClock - Save American Hemp Countdown Clock
 
-A countdown clock for the Save American Hemp campaign, counting down to November 12, 2026.
+A countdown clock for the Save American Hemp campaign, counting down to the main federal hemp restrictions on December 11, 2026.
+
+## Deadline and timezone
+
+- Public Law 119-103, section 2019 delays most of the new definition until December 11, 2026. The narrower exclusion for products containing cannabinoids the plant cannot naturally produce remains November 12. Sources: [enacted law](https://www.congress.gov/119/plaws/publ103/PLAW-119publ103.pdf) and [CRS explanation](https://www.congress.gov/crs-product/IF13136). Verified November 4, 2026.
+- The clock uses **the start of December 11 at midnight US Eastern (EST)** as an explicit display convention, not a claim of a separately specified statutory enforcement hour. `2026-12-11T00:00:00-05:00` is `2026-12-11T05:00:00Z` for every visitor.
+- Keep the homepage, both standalone widgets, and `.github/workflows/update-preview.yml` in sync. Run `node --test tests/deadline.test.mjs` before publishing. These regressions cover timezone independence, real widget calculations, expiry boundaries, and the public deadline/exception note.
+- Hosting is GitHub Pages from `main` at `/`. Push a reviewed commit, verify the Pages deployment and live files, then run the preview workflow and verify the refreshed image. Do not deploy the separate template-saving Worker for a clock-only change.
 
 ## Live Site
 🌐 [SAVEHEMPCLOCK.COM](https://savehempclock.com)
@@ -8,7 +15,7 @@ A countdown clock for the Save American Hemp campaign, counting down to November
 ## Features
 
 ### 🕒 Dynamic Countdown
-- Real-time flip clock animation counting down to November 12, 2026 midnight
+- Real-time flip clock animation counting down to December 11, 2026 at midnight US Eastern
 - Fully responsive design for all screen sizes
 - Classic monochromatic gray theme
 
@@ -118,7 +125,7 @@ SAHCountdown.init({
 SAHCountdown.init({
   container: '#sah-countdown',
   showTitle: true,        // Show "Save American Hemp" title
-  showSubtitle: true,     // Show "Until Hemp is ILLEGAL"
+  showSubtitle: true,     // Show "Until New Federal Hemp Restrictions"
   showDescription: true,  // Show campaign description
   showHashtag: true,     // Show #SAVEAMERICANHEMP
   showCTA: false         // Show "Contact Legislators" button

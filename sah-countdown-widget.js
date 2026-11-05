@@ -41,8 +41,8 @@
     }
   };
 
-  // Target date
-  const TARGET_DATE = new Date('2026-11-12T00:00:00').getTime();
+  // Display convention: start of December 11, 2026 in US Eastern time (EST).
+  const TARGET_DATE = new Date('2026-12-11T00:00:00-05:00').getTime();
 
   const SAHCountdown = {
     instances: [],
@@ -433,7 +433,7 @@
               color: ${colors.subtitle};
               text-align: center;
               margin: ${10 * sizeMultiplier}px 0 0 0;
-            ">Until Hemp is ILLEGAL</h2>
+            ">Until New Federal Hemp Restrictions</h2>
           ` : ''}
 
           ${config.showDescription ? `
@@ -446,8 +446,9 @@
               max-width: 700px;
             ">
               <p style="margin: 0 0 ${15 * sizeMultiplier}px 0;">
-                A harmful federal hemp rule is on the horizon—but it's not final. We still have the power to stop it. If you value this industry, your access, or the jobs it supports, now is the moment to act. Contact your legislators and tell them this rule is the wrong move for America. Your voice can change the outcome.
+                Most new federal hemp restrictions take effect December 11, 2026 unless Congress changes the law. If you value this industry, your access, or the jobs it supports, now is the moment to act. Contact your legislators and ask for reasonable, whole-plant hemp regulation—not prohibition.
               </p>
+              <p style="font-size: 0.85em; line-height: 1.6; margin: 12px 0 0;"><strong>Main deadline: December 11, 2026</strong>. The narrower restriction on products containing cannabinoids the plant cannot naturally produce still takes effect November 12. <a href="https://www.congress.gov/crs-product/IF13136" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">Congressional Research Service explanation</a>. Display convention: midnight Eastern at the start of December 11; this is an informational countdown, not legal advice.</p>
             </div>
           ` : ''}
 

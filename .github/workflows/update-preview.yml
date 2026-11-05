@@ -63,7 +63,7 @@ jobs:
                 screenshotButton.style.display = 'none';
                 
                 // Update and show static display
-                const targetDate = new Date('2026-11-12T00:00:00').getTime();
+                const targetDate = new Date('2026-12-11T00:00:00-05:00').getTime();
                 const now = new Date().getTime();
                 const distance = targetDate - now;
                 

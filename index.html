@@ -7,7 +7,7 @@
     
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="#SaveAmericanHemp Countdown Clock">
-    <meta property="og:description" content="A harmful federal hemp rule is on the horizon—but it's not final. We still have the power to stop it. Contact your legislators now.">
+    <meta property="og:description" content="Most new federal hemp restrictions take effect December 11, 2026 unless Congress changes the law. Contact your legislators now.">
     <meta property="og:image" content="https://savehempclock.com/preview.png?v=202611042152">
     <meta property="og:url" content="https://savehempclock.com">
     <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="#SaveAmericanHemp Countdown Clock">
-    <meta name="twitter:description" content="A harmful federal hemp rule is on the horizon—but it's not final. We still have the power to stop it. Contact your legislators now.">
+    <meta name="twitter:description" content="Most new federal hemp restrictions take effect December 11, 2026 unless Congress changes the law. Contact your legislators now.">
     <meta name="twitter:image" content="https://savehempclock.com/preview.png?v=202611042152">
     
     <!-- Flip Library CSS -->
@@ -831,9 +831,10 @@
 
             <!-- Text Content Section -->
             <div class="text-content">
-                <h2 class="countdown-subtitle">Until Hemp is ILLEGAL</h2>
+                <h2 class="countdown-subtitle">Until New Federal Hemp Restrictions</h2>
                 <div class="countdown-description">
-                    <p>A harmful federal hemp rule is on the horizon—but it's not final. We still have the power to stop it. If you value this industry, your access, or the jobs it supports, now is the moment to act. Contact your legislators and tell them this rule is the wrong move for America. Your voice can change the outcome.</p>
+                    <p>Most new federal hemp restrictions take effect December 11, 2026 unless Congress changes the law. If you value this industry, your access, or the jobs it supports, now is the moment to act. Contact your legislators and ask for reasonable, whole-plant hemp regulation—not prohibition.</p>
+                    <p style="font-size: 0.85em; line-height: 1.6; margin: 12px 0 0;"><strong>Main deadline: December 11, 2026</strong>. The narrower restriction on products containing cannabinoids the plant cannot naturally produce still takes effect November 12. <a href="https://www.congress.gov/crs-product/IF13136" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">Congressional Research Service explanation</a>. Display convention: midnight Eastern at the start of December 11; this is an informational countdown, not legal advice.</p>
                 </div>
 
                 <!-- Hashtag -->
@@ -902,8 +903,8 @@
         // Store countdown interval ID so we can pause/resume
         let countdownInterval = null;
         
-        // Target date for countdown: November 12, 2026 at midnight
-        const targetDate = new Date('2026-11-12T00:00:00').getTime();
+        // Display convention: start of December 11, 2026 in US Eastern time (EST).
+        const targetDate = new Date('2026-12-11T00:00:00-05:00').getTime();
 
         function handleTickInit(tick) {
             // Identify which tick this is based on its class
